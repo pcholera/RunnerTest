@@ -24,7 +24,9 @@ jobs:
         token: ${{secrets.github_token}}
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: |
+        dotnet restore RunnerTest\RunnerTest.csproj
+        dotnet restore RunnerTestProject\RunnerTestProject.csproj
 
     - name: Build
       run: dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
