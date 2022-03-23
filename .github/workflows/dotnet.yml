@@ -29,7 +29,9 @@ jobs:
         dotnet restore RunnerTestProject\RunnerTestProject.csproj
 
     - name: Build
-      run: dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
+      run: |
+        dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
+        dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
 
     - name: Test
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
