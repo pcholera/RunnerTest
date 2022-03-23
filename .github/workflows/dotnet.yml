@@ -41,4 +41,7 @@ jobs:
     - name: Push
       #run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.github_token}}
       #run: dotnet nuget push RunnerTest.${{ steps.buildnumber.outputs.build_number }}.0.0.nupkg --source https://nuget.pkg.github.com/pcholera/index.json --api-key ${{secrets.github_token}}
-      run: dotnet nuget push **/*.nupkg --source https://nuget.pkg.github.com/pcholera/index.json --api-key ${{secrets.github_token}}
+      #run: dotnet nuget push **/*.nupkg --source https://nuget.pkg.github.com/pcholera/index.json --api-key ${{secrets.github_token}}
+      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
+      env:
+        NUGET_AUTH_TOKEN: ${{ github.token }}
