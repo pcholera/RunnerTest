@@ -22,9 +22,9 @@ jobs:
 
     - name: Set VERSION variable
       id: buildnumber
-        uses: einaregilsson/build-number@v3
-        with:
-          token: ${{secrets.github_token}}
+      uses: einaregilsson/build-number@v3
+      with:
+        token: ${{secrets.github_token}}
 
     - name: Restore dependencies
       run: dotnet restore
