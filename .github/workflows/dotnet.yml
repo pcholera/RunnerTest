@@ -27,13 +27,13 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build **/*.csproj --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test **/*.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack --configuration Release /p:Version=0.0.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=0.0.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
 
     - name: Push
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
