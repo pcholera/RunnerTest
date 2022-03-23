@@ -16,9 +16,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1
-        source-url: https://nuget.pkg.github.com/pcholera/index.json
-      env:
-        NUGET_AUTH_TOKEN: '%NUGET_AUTH_TOKEN%'
 
     - name: Set VERSION variable
       id: buildnumber
