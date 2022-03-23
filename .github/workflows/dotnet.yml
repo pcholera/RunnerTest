@@ -3,23 +3,40 @@ name: .NET
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
 
     runs-on: self-hosted
 
+    env:
+      BUILD_CONFIG: 'Release'
+
     steps:
     - uses: actions/checkout@v2
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1
+
+    - name: Set VERSION variable
+      id: buildnumber
+        uses: einaregilsson/build-number@v3
+        with:
+          token: ${{secrets.github_token}}
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --configuration $BUILD_CONFIG --no-restore
+
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --configuration $BUILD_CONFIG --no-build --verbosity normal
+
+    - name: Pack
+      run: dotnet pack --configuration $BUILD_CONFIG /p:Version=${{ steps.buildnumber.outputs.build_number }} --no-build --output
+
+    - name: Push
+      run: dotnet nuget push RunnerTest.${{ steps.buildnumber.outputs.build_number }}.nupkg --source https://nuget.pkg.github.com/pcholera/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
