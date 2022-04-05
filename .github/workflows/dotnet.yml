@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  majorMinorVersion: "0.0"
+  vNumber: "0.0"
 
 jobs:
   build:
@@ -26,6 +26,9 @@ jobs:
       with:
         token: ${{secrets.github_token}}
 
+    - name: "Print Major Minor Version"
+      run: echo Version = $vNumber
+
     - uses: rishabhgupta/split-by@v1
       id: split
       with:
@@ -33,18 +36,12 @@ jobs:
           split-by: '/'
 
     - name : Set Major Minor Version
-      id: majorMinorVersion
-      #if: "steps.split.outputs._0 == 'release'"
-      #run: echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
-      run: |
-        if(steps.split.outputs._0 == 'release'); then
-          echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
-        else
-            echo "majorMinorVersion='0.0.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
-        fi
+      id: setMajorMinorVersion
+      if: "steps.split.outputs._0 == 'release'"
+      run: echo "vNumber=steps.split.outputs._1" >> $GITHUB_ENV
 
     - name: "Print Major Minor Version"
-      run: echo Version = $majorMinorVersion
+      run: echo Version = $vNumber
 
     - name: Restore dependencies
       run: |
@@ -60,7 +57,7 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$majorMinorVersion.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$vNumber.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
 
     - name: Push
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
