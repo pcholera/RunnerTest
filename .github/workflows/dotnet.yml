@@ -20,20 +20,17 @@ jobs:
       with:
         dotnet-version: 3.1
 
-    - name: Print Name
-      run: echo ${{ github.ref_name }}
-
     - name: Set VERSION variable
       id: buildnumber
       uses: einaregilsson/build-number@v3
       with:
         token: ${{secrets.github_token}}
 
-    - uses: jungwinter/split@v2
+    - uses: rishabhgupta/split-by@v1
       id: split
       with:
-          msg: ${{ github.ref_name }}
-          separator: '/'
+          string: ${{ github.ref_name }}
+          split-by: '/'
 
     - name : Set Build Version
       id: majorMinorVersion
