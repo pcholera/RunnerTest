@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  vNumber: "0.0"
+  vNumber: 0.0
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
         token: ${{secrets.github_token}}
 
     - name: "Print Major Minor Version"
-      run: echo Version = $vNumber
+      run: echo "Version = $vNumber"
 
     - uses: rishabhgupta/split-by@v1
       id: split
