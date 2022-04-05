@@ -37,14 +37,14 @@ jobs:
       #if: "steps.split.outputs._0 == 'release'"
       #run: echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
       run: |
-        if steps.split.outputs._0 == 'release'; then
+        if(steps.split.outputs._0 == 'release')
           echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
         else
             echo "majorMinorVersion='0.0.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
         fi
 
     - name: "Print Major Minor Version"
-      run: echo $majorMinorVersion
+      run: echo Version = $majorMinorVersion
 
     - name: Restore dependencies
       run: |
