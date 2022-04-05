@@ -27,7 +27,7 @@ jobs:
       run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
     - name: Check output
-      run: echo ${{ steps.vars.outputs.short_ref }}
+      run: echo ${{ steps.branchName.outputs.short_ref }}
 
     - name: Set VERSION variable
       id: buildnumber
@@ -38,7 +38,7 @@ jobs:
     - uses: jungwinter/split@v2
       id: split
       with:
-          msg: ${{ steps.vars.outputs.short_ref }}
+          msg: ${{ steps.branchName.outputs.short_ref }}
           separator: '/'
 
     - name : Set Build Version
