@@ -23,15 +23,6 @@ jobs:
     - name: Print Name
       run: echo ${{ github.ref_name }}
 
-    - name: Get Branch Name
-      id: branchName
-      #uses: tj-actions/branch-names@v5.1
-      #run: echo "Branch=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
-      run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
-
-    - name: Check output
-      run: echo ${{ steps.branchName.outputs.short_ref }}
-
     - name: Set VERSION variable
       id: buildnumber
       uses: einaregilsson/build-number@v3
@@ -41,7 +32,7 @@ jobs:
     - uses: jungwinter/split@v2
       id: split
       with:
-          msg: ${{ steps.branchName.outputs.short_ref }}
+          msg: ${{ github.ref_name }}
           separator: '/'
 
     - name : Set Build Version
