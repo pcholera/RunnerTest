@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  majorMinorVersion: 0.0
+  majorMinorVersion: "0.0"
 
 jobs:
   build:
@@ -46,21 +46,23 @@ jobs:
         fi
 
     - name: "Print Major Minor Version"
-      run: echo ${{ evn.majorMinorVersion }}
+      run: echo "Version = ${{ majorMinorVersion }}"
 
     - name: Restore dependencies
       run: |
         dotnet restore RunnerTest\RunnerTest.csproj
         dotnet restore RunnerTestProject\RunnerTestProject.csproj
+
     - name: Build
       run: |
         dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
         dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
+
     - name: Test
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=0.0.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=0.0.${{ majorMinorVersion }} --no-build --output .
 
     - name: Push
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
