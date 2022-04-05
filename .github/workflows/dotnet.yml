@@ -32,14 +32,11 @@ jobs:
           string: ${{ github.ref_name }}
           split-by: '/'
 
-    - name : Set Build Version
+    - name : Set Major Minor Version
       id: majorMinorVersion
+      if: "steps.split.outputs._0 == 'release'"
       run: |
-        if steps.split.outputs._0 == 'release'; then
-          echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
-        else
-            echo "majorMinorVersion='0.0.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
-        fi
+        echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
 
     - name: "Print Major Minor Version"
       run: echo "Version = $majorMinorVersion"
@@ -58,7 +55,7 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$majorMinorVersion --no-build --output .
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$majorMinorVersion.${steps.buildnumber.outputs.build_number} --no-build --output .
 
     - name: Push
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
