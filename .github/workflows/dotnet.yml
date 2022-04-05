@@ -22,7 +22,8 @@ jobs:
 
     - name: Get Branch Name
       id: branchName
-      uses: tj-actions/branch-names@v5.1
+      #uses: tj-actions/branch-names@v5.1
+      run: echo "Branch=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
 
     - name: Set VERSION variable
       id: buildnumber
@@ -33,7 +34,7 @@ jobs:
     - uses: jungwinter/split@v2
       id: split
       with:
-          msg: ${{ steps.branchName.outputs.head_ref_branch }}
+          msg: $Branch
           separator: '/'
 
     - name : Set Build Version
