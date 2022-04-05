@@ -26,6 +26,9 @@ jobs:
       #run: echo "Branch=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
       run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
+    - name: Check output
+      run: echo ${{ steps.vars.outputs.short_ref }}
+
     - name: Set VERSION variable
       id: buildnumber
       uses: einaregilsson/build-number@v3
