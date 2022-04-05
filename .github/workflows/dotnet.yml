@@ -35,11 +35,10 @@ jobs:
     - name : Set Major Minor Version
       id: majorMinorVersion
       if: "steps.split.outputs._0 == 'release'"
-      run: |
-        echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
+      run: echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
 
     - name: "Print Major Minor Version"
-      run: echo "Version = $majorMinorVersion"
+      run: echo $majorMinorVersion
 
     - name: Restore dependencies
       run: |
