@@ -46,7 +46,7 @@ jobs:
         fi
 
     - name: "Print Major Minor Version"
-      run: echo "Version = ${{ majorMinorVersion }}"
+      run: echo "Version = $majorMinorVersion"
 
     - name: Restore dependencies
       run: |
@@ -62,7 +62,7 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=0.0.${{ majorMinorVersion }} --no-build --output .
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=0.0.$majorMinorVersion --no-build --output .
 
     - name: Push
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
