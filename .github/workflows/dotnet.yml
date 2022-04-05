@@ -17,27 +17,47 @@ jobs:
       with:
         dotnet-version: 3.1
 
+    - name: Get Branch Name
+      id: branchName
+      uses: tj-actions/branch-names@v5.1
+
     - name: Set VERSION variable
       id: buildnumber
       uses: einaregilsson/build-number@v3
       with:
         token: ${{secrets.github_token}}
 
+    - uses: jungwinter/split@v2
+      id: split
+      with:
+          msg: ${{ steps.branchName.outputs.head_ref_branch }}
+          separator: '/'
+
+    - name : Set Build Version
+      id: majorMinorVersion
+      run: |
+        if steps.split.outputs._0 == 'release'; then
+          echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
+        else
+            echo "majorMinorVersion='0.0.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
+        fi
+
+    - name: "Print Major Minor Version"
+      run: echo "Version = ${env.majorMinorVersion}"
+
     - name: Restore dependencies
       run: |
         dotnet restore RunnerTest\RunnerTest.csproj
         dotnet restore RunnerTestProject\RunnerTestProject.csproj
-
     - name: Build
       run: |
         dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
         dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
-
     - name: Test
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=0.0.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=0.0.${{ evn.majorMinorVersion }} --no-build --output .
 
     - name: Push
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
