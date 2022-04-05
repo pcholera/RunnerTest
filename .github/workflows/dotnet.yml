@@ -34,8 +34,14 @@ jobs:
 
     - name : Set Major Minor Version
       id: majorMinorVersion
-      if: "steps.split.outputs._0 == 'release'"
-      run: echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
+      #if: "steps.split.outputs._0 == 'release'"
+      #run: echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
+      run: |
+        if steps.split.outputs._0 == 'release'; then
+          echo "majorMinorVersion=steps.split.outputs._1+'.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
+        else
+            echo "majorMinorVersion='0.0.'+steps.buildnumber.outputs.build_number" >> $GITHUB_ENV
+        fi
 
     - name: "Print Major Minor Version"
       run: echo $majorMinorVersion
