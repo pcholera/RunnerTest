@@ -20,6 +20,9 @@ jobs:
       with:
         dotnet-version: 3.1
 
+    - name: Print Name
+      run: echo ${{ github.ref_name }}
+
     - name: Get Branch Name
       id: branchName
       #uses: tj-actions/branch-names@v5.1
