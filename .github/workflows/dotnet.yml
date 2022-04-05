@@ -43,7 +43,7 @@ jobs:
         fi
 
     - name: "Print Major Minor Version"
-      run: echo "Version = ${env.majorMinorVersion}"
+      run: echo "Version = ${{ evn.majorMinorVersion }}"
 
     - name: Restore dependencies
       run: |
