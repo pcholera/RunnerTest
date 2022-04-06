@@ -1,10 +1,12 @@
-name: .NET
+name: Build
 
 on: push
 
+env:
+  projectName: "RunnerTest"
+
 jobs:
   build:
-
     runs-on: self-hosted
 
     steps:
@@ -13,9 +15,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1
+        dotnet-version: 5.0.x
 
-    - name: Set VERSION variable
+    - name: Generate Build Version Number
       id: buildnumber
       uses: einaregilsson/build-number@v3
       with:
@@ -28,7 +30,7 @@ jobs:
           split-by: '/'
 
     - name : Get Release Version Number
-      id: releaseNumber
+      id: buildNumber
       run: |
         if ( "${{ steps.split.outputs._0 }}" -eq "release" ){
           echo "::set-output name=number::${{ steps.split.outputs._1 }}.${{ steps.buildnumber.outputs.build_number }}" ;
@@ -38,25 +40,30 @@ jobs:
         }
 
     - name: "Print Major Minor Version"
-      run: echo "Version = ${{ steps.releaseNumber.outputs.number }}"
+      run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
 
     - name: Restore dependencies
-      run: |
-        dotnet restore RunnerTest\RunnerTest.csproj
-        dotnet restore RunnerTestProject\RunnerTestProject.csproj
+      run: dotnet restore ${{ env.projectName }}\${{ env.projectName }}.csproj
 
     - name: Build
-      run: |
-        dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
-        dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
+      run: dotnet build ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
+      run: dotnet test RunnerTestProject\RunnerTestProject.csproj --filter Category!=Integration --configuration Release --no-restore
 
-    - name: Pack
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.releaseNumber.outputs.number }} --no-build --output .
+    - name: Publish
+      if: |
+        "${{ steps.split.outputs._0 }}" == 'main' || 
+        "${{ steps.split.outputs._0 }}" == 'release' || 
+        "${{ steps.split.outputs._0 }}" == 'hotfix'
+      run: dotnet publish Espresso\${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish
 
-    - name: Push
-      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
-      env:
-        NUGET_AUTH_TOKEN: ${{ github.token }}
+    - name: Upload Artifacts
+      if: |
+        "${{ steps.split.outputs._0 }}" == 'main' || 
+        "${{ steps.split.outputs._0 }}" == 'release' || 
+        "${{ steps.split.outputs._0 }}" == 'hotfix'
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.projectName }}
+        path: .\Publish
