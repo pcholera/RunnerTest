@@ -25,10 +25,7 @@ jobs:
     #   uses: einaregilsson/build-number@v3
     #   with:
     #     token: ${{secrets.github_token}}
-
-    - name: "Print Major Minor Version"
-      run: echo "Version = ${{env.vNumber}}"
-
+    
     - uses: rishabhgupta/split-by@v1
       id: split
       with:
@@ -38,15 +35,10 @@ jobs:
     - name : Set Major Minor Version
       id: setMajorMinorVersion
       #if: "steps.split.outputs._0 == 'release'"
-      run: |
-        echo "number=steps.split.outputs._0" >> $GITHUB_ENV
-        echo "Split = ${{ steps.split.outputs._0 }}"
+      run: echo "::set-output name=number::$(steps.split.outputs._0)"
 
-    - name: "Print Major Minor Version 2"
-      run: echo "Version = $number"
-
-    - name: "Print Major Minor Version 3"
-      run: echo "Version = ${{env.vNumber}}"
+    - name: "Print Major Minor Version"
+      run: echo "Version = ${{ steps.buildnumber.outputs.number }}"
 
     # - name: Restore dependencies
     #   run: |
