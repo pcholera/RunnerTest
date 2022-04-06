@@ -38,10 +38,12 @@ jobs:
     - name : Set Major Minor Version
       id: setMajorMinorVersion
       #if: "steps.split.outputs._0 == 'release'"
-      run: echo "vNumber=steps.split.outputs._0" >> $GITHUB_ENV
+      run: |
+        echo "number=steps.split.outputs._0" >> $GITHUB_ENV
+        echo "Split = ${{ steps.split.outputs._0 }}"
 
     - name: "Print Major Minor Version 2"
-      run: echo Version = $vNumber
+      run: echo "Version = $number"
 
     - name: "Print Major Minor Version 3"
       run: echo "Version = ${{env.vNumber}}"
