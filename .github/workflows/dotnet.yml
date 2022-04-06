@@ -42,7 +42,7 @@ jobs:
         }
 
     - name: "Print Major Minor Version"
-      run: echo "Version = ${{ steps.setMajorMinorVersion.outputs.number }}"
+      run: echo "Version = ${{ steps.releaseNumber.outputs.number }}"
 
     # - name: Restore dependencies
     #   run: |
