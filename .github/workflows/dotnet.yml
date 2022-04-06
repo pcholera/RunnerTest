@@ -10,10 +10,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # - name: Setup .NET
-    #   uses: actions/setup-dotnet@v1
-    #   with:
-    #     dotnet-version: 3.1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1
 
     - name: Set VERSION variable
       id: buildnumber
@@ -40,23 +40,23 @@ jobs:
     - name: "Print Major Minor Version"
       run: echo "Version = ${{ steps.releaseNumber.outputs.number }}"
 
-    # - name: Restore dependencies
-    #   run: |
-    #     dotnet restore RunnerTest\RunnerTest.csproj
-    #     dotnet restore RunnerTestProject\RunnerTestProject.csproj
+    - name: Restore dependencies
+      run: |
+        dotnet restore RunnerTest\RunnerTest.csproj
+        dotnet restore RunnerTestProject\RunnerTestProject.csproj
 
-    # - name: Build
-    #   run: |
-    #     dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
-    #     dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
+    - name: Build
+      run: |
+        dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
+        dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
 
-    # - name: Test
-    #   run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
+    - name: Test
+      run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
-    # - name: Pack
-    #   run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$vNumber.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
+    - name: Pack
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.releaseNumber.outputs.number }} --no-build --output .
 
-    # - name: Push
-    #   run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
-    #   env:
-    #     NUGET_AUTH_TOKEN: ${{ github.token }}
+    - name: Push
+      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
+      env:
+        NUGET_AUTH_TOKEN: ${{ github.token }}
