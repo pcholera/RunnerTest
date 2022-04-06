@@ -12,10 +12,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1
+    # - name: Setup .NET
+    #   uses: actions/setup-dotnet@v1
+    #   with:
+    #     dotnet-version: 3.1
 
     - name: Set VERSION variable
       id: buildnumber
@@ -34,7 +34,7 @@ jobs:
       #if: "steps.split.outputs._0 == 'release'"
       #run: echo "::set-output name=number::${{ steps.split.outputs._1 }}"
       run: |
-        if [[ ${{ steps.split.outputs._0 }} == "release" ]] ; then 
+        if ( ${{ steps.split.outputs._0 }} == "release" ) ; then 
           echo "::set-output name=number::${{ steps.split.outputs._1 }}" ;
         else 
           echo "::set-output name=number::0.0" ; 
