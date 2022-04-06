@@ -34,10 +34,12 @@ jobs:
       #if: "steps.split.outputs._0 == 'release'"
       #run: echo "::set-output name=number::${{ steps.split.outputs._1 }}"
       run: |
-        if ( ${{ steps.split.outputs._0 }} == "release" ) ; then 
+        if ( ${{ steps.split.outputs._0 }} == "release" ){
           echo "::set-output name=number::${{ steps.split.outputs._1 }}" ;
-        else 
+        }
+        else {
           echo "::set-output name=number::0.0" ; 
+        }
         fi
 
     - name: "Print Major Minor Version"
