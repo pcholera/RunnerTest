@@ -20,14 +20,14 @@ jobs:
       with:
         dotnet-version: 3.1
 
-    - name: Set VERSION variable
-      id: buildnumber
-      uses: einaregilsson/build-number@v3
-      with:
-        token: ${{secrets.github_token}}
+    # - name: Set VERSION variable
+    #   id: buildnumber
+    #   uses: einaregilsson/build-number@v3
+    #   with:
+    #     token: ${{secrets.github_token}}
 
     - name: "Print Major Minor Version"
-      run: echo "Version = $vNumber"
+      run: echo "Version = ${{env.vNumber}}"
 
     - uses: rishabhgupta/split-by@v1
       id: split
@@ -40,26 +40,29 @@ jobs:
       if: "steps.split.outputs._0 == 'release'"
       run: echo "vNumber=steps.split.outputs._1" >> $GITHUB_ENV
 
-    - name: "Print Major Minor Version"
+    - name: "Print Major Minor Version 2"
       run: echo Version = $vNumber
 
-    - name: Restore dependencies
-      run: |
-        dotnet restore RunnerTest\RunnerTest.csproj
-        dotnet restore RunnerTestProject\RunnerTestProject.csproj
+    - name: "Print Major Minor Version 3"
+      run: echo "Version = ${{env.vNumber}}"
 
-    - name: Build
-      run: |
-        dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
-        dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
+    # - name: Restore dependencies
+    #   run: |
+    #     dotnet restore RunnerTest\RunnerTest.csproj
+    #     dotnet restore RunnerTestProject\RunnerTestProject.csproj
 
-    - name: Test
-      run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
+    # - name: Build
+    #   run: |
+    #     dotnet build RunnerTest/RunnerTest.csproj --configuration Release --no-restore
+    #     dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-restore
 
-    - name: Pack
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$vNumber.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
+    # - name: Test
+    #   run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
-    - name: Push
-      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
-      env:
-        NUGET_AUTH_TOKEN: ${{ github.token }}
+    # - name: Pack
+    #   run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$vNumber.${{ steps.buildnumber.outputs.build_number }} --no-build --output .
+
+    # - name: Push
+    #   run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
+    #   env:
+    #     NUGET_AUTH_TOKEN: ${{ github.token }}
