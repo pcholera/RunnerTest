@@ -17,14 +17,11 @@ jobs:
       with:
         dotnet-version: 3.1
 
-    # - name: Set VERSION variable
-    #   id: buildnumber
-    #   uses: einaregilsson/build-number@v3
-    #   with:
-    #     token: ${{secrets.github_token}}
-
-    - name: "Print Major Minor Version"
-      run: echo "Version = ${{env.vNumber}}"
+    - name: Set VERSION variable
+      id: buildnumber
+      uses: einaregilsson/build-number@v3
+      with:
+        token: ${{secrets.github_token}}
 
     - uses: rishabhgupta/split-by@v1
       id: split
@@ -32,10 +29,17 @@ jobs:
           string: ${{ github.ref_name }}
           split-by: '/'
 
-    - name : Set Major Minor Version
-      id: setMajorMinorVersion
+    - name : Get Release Version Number
+      id: releaseNumber
       #if: "steps.split.outputs._0 == 'release'"
-      run: echo "::set-output name=number::${{ steps.split.outputs._0 }}"
+      #run: echo "::set-output name=number::${{ steps.split.outputs._1 }}"
+      run: |
+        if [[ "${{ steps.split.outputs._0 }}" == "release" ]]; then
+          echo "::set-output name=number::${{ steps.split.outputs._1 }}"
+        fi
+        if [[ "${{ steps.split.outputs._0 }}" != "release" ]]; then
+          echo "::set-output name=number::0.0"
+        fi
 
     - name: "Print Major Minor Version"
       run: echo "Version = ${{ steps.setMajorMinorVersion.outputs.number }}"
