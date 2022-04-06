@@ -40,7 +40,6 @@ jobs:
         else {
           echo "::set-output name=number::0.0" ; 
         }
-        fi
 
     - name: "Print Major Minor Version"
       run: echo "Version = ${{ steps.setMajorMinorVersion.outputs.number }}"
