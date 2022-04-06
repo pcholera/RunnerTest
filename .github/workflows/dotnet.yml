@@ -56,14 +56,14 @@ jobs:
         "${{ steps.split.outputs._0 }}" == 'main' || 
         "${{ steps.split.outputs._0 }}" == 'release' || 
         "${{ steps.split.outputs._0 }}" == 'hotfix'
-      run: dotnet publish Espresso\${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish
+      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish
 
     - name: Upload Artifacts
       if: |
         "${{ steps.split.outputs._0 }}" == 'main' || 
         "${{ steps.split.outputs._0 }}" == 'release' || 
         "${{ steps.split.outputs._0 }}" == 'hotfix'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.projectName }}
         path: .\Publish
