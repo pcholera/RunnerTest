@@ -70,7 +70,7 @@ jobs:
   deploy_to_dev:
     name: Deploy To Dev
     needs: build
-    if: needs.build.outputs.branchName == 'develop'
+    #if: needs.build.outputs.branchName == 'develop'
     runs-on: self-hosted
     steps:
       - name: Download Artifacts
