@@ -69,10 +69,12 @@ jobs:
         name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
         path: .\Publish
 
-    - name: Deploy To Dev
-      if: steps.split.outputs._0 == 'main'
-      uses: ./.github/workflows/deploy.yml
-      with:
-        projectName: ${{ env.projectName }}
-        appPoolName: ${{ env.devAppPoolName }}
-        targetLocation: ${{ env.devTargetLocation }}
+  deploy_to_dev:
+    name: Deploy To Dev
+    needs: build
+    if: steps.split.outputs._0 == 'develop'
+    uses: ./.github/workflows/deploy.yml
+    with:
+      projectName: ${{ env.projectName }}
+      appPoolName: ${{ env.devAppPoolName }}
+      targetLocation: ${{ env.devTargetLocation }}
