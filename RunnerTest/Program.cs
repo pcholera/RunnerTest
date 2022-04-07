@@ -11,6 +11,7 @@ namespace RunnerTest
             ba.Credit(5);
             ba.Debit(10);
             Console.WriteLine("Current balance is ${0}", ba.Balance);
+            Console.ReadLine();
         }
     }
 }
