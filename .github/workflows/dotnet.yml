@@ -6,6 +6,7 @@ env:
   projectName: "RunnerTest"
   devAppPoolName: "DefaultAppPool"
   devDargetLocation: "C:\\Hartree\\Sites\\RunnerTest"
+  allowDevDeployment: ${{ secrets.ALLOW_DEV_DEPLOY }}
 
 jobs:
   build:
@@ -15,7 +16,6 @@ jobs:
     outputs:
       branchName: ${{ steps.split.outputs._0 }}
       assemblyVersion: ${{ steps.buildNumber.outputs.number }}
-      allowDevDeployment: ${{ secrets.ALLOW_DEV_DEPLOY }}
 
     steps:
     - uses: actions/checkout@v2
@@ -73,7 +73,7 @@ jobs:
   deploy_to_dev:
     name: Deploy To Dev
     needs: build
-    if: needs.build.outputs.branchName == 'main' && needs.build.outputs.allowDevDeployment == 'true'
+    if: needs.build.outputs.branchName == 'main'
     runs-on: self-hosted
     steps:
       - name: Download Artifacts
