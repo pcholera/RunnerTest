@@ -4,6 +4,7 @@ on: push
 
 env:
   projectName: "RunnerTest"
+  devDargetLocation: "C:\\Hartree\\Sites\\RunnerTest"
 
 jobs:
   build:
@@ -78,3 +79,8 @@ jobs:
         with:
           name: ${{ env.projectName }} - ${{ needs.build.outputs.assemblyVersion }}
           path: .\Publish_Artifacts
+
+      - name: Publish File To Server
+        run: |
+          Remove-Item -Recurse "${{ env.devDargetLocation }}"
+          Copy-Item -Path .\Publish_Artifacts -Destination "${{ env.devDargetLocation }}" -recurse -Force
