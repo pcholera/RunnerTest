@@ -44,7 +44,7 @@ jobs:
       - name: Publish File To Server
         run: |
           Remove-Item -Recurse "${{ inputs.targetLocation }}"
-          Copy-Item -Path ${{ inputs.sourceLocation }} -Destination "${{ inputs.targetLocation }}" -recurse -Force
+          Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ inputs.targetLocation }}" -recurse -Force
 
       - name: Start App Pool
         run: .\DeploymentScript\StartAppPool.ps1 ${{ inputs.appPoolName }}
