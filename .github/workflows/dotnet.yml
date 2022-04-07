@@ -54,7 +54,7 @@ jobs:
       run: dotnet build ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test RunnerTestProject\RunnerTestProject.csproj --filter Category!=Integration --configuration Release --no-restore
+      run: dotnet test RunnerTestProject\RunnerTestProject.csproj --configuration Release --no-restore
 
     - name: Publish
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
