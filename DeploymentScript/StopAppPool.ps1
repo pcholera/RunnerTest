@@ -2,7 +2,7 @@ $appPoolName = $args[0];
 
 $ErrorActionPreference = "Stop";
 
-Write-Output "Stopping application pool $appPoolName on machine $machine."
+Write-Output "Stopping application pool $appPoolName."
 
 Invoke-Command -ArgumentList $appPoolName -ScriptBlock { param($appPoolName) Import-Module WebAdministration; Stop-WebAppPool -Name $appPoolName } 
 
