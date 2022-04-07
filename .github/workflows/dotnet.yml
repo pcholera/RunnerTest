@@ -48,10 +48,14 @@ jobs:
       run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
 
     - name: Restore dependencies
-      run: dotnet restore ${{ env.projectName }}\${{ env.projectName }}.csproj
+      run: |
+        dotnet restore ${{ env.projectName }}\${{ env.projectName }}.csproj
+        dotnet restore RunnerTestProject\RunnerTestProject.csproj.csproj
 
     - name: Build
-      run: dotnet build ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore
+      run: |
+        dotnet build ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore
+        dotnet build RunnerTestProject\RunnerTestProject.csproj --configuration Release --no-restore
 
     - name: Test
       run: dotnet test RunnerTestProject\RunnerTestProject.csproj --configuration Release --no-restore
