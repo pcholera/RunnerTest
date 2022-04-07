@@ -25,7 +25,7 @@ on:
         type: string
 
 env:
-  sourceLocation: ".\Publish_Artifacts"
+  sourceLocation: ".\\Publish_Artifacts"
 
 jobs:
   deploy:
