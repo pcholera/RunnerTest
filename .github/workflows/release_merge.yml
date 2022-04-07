@@ -21,14 +21,10 @@ jobs:
       #     github_token: ${{ github.token }}
 
       - name: Merge Release Changes To Main
-        run: |
-          git config --global user.email "${GITHUB_ACTOR}"
-          git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
-          git status
-          git pull
-          git checkout main
-          git status
-          git checkout "$GITHUB_HEAD_REF"
-          git merge main --no-edit
-          git push
-          git status
+        uses: robotology/gh-action-nightly-merge@v1.3.1
+        with:
+          stable_branch: 'main'
+          development_branch: ${{ github.ref_name }}
+          allow_ff: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
