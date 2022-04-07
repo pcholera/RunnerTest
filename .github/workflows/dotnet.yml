@@ -4,6 +4,7 @@ on: push
 
 env:
   projectName: "RunnerTest"
+  devAppPoolName: "DefaultAppPool"
   devDargetLocation: "C:\\Hartree\\Sites\\RunnerTest"
 
 jobs:
@@ -80,7 +81,13 @@ jobs:
           name: ${{ env.projectName }} - ${{ needs.build.outputs.assemblyVersion }}
           path: .\Publish_Artifacts
 
+      - name: Stop App Pool
+        run: .\DeploymentScript\StopAppPool.ps1 ${{ env.devAppPoolName }} 
+
       - name: Publish File To Server
         run: |
           Remove-Item -Recurse "${{ env.devDargetLocation }}"
           Copy-Item -Path .\Publish_Artifacts -Destination "${{ env.devDargetLocation }}" -recurse -Force
+
+      - name: Start App Pool
+        run: .\DeploymentScript\StartAppPool.ps1 ${{ env.devAppPoolName }}
