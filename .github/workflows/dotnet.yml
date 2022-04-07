@@ -75,6 +75,6 @@ jobs:
     if: steps.split.outputs._0 == 'develop'
     uses: ./.github/workflows/deploy.yml
     with:
-      projectName: ${{ env.projectName }}
-      appPoolName: ${{ env.devAppPoolName }}
-      targetLocation: ${{ env.devTargetLocation }}
+      projectName: "RunnerTest"
+      appPoolName: "DefaultAppPool"
+      targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
