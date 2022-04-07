@@ -1,0 +1,81 @@
+name: Build
+
+on: push
+
+env:
+  projectName: "RunnerTest"
+  devAppPoolName: "DefaultAppPool"
+  devTargetLocation: "C:\\Hartree\\Sites\\RunnerTest"
+
+jobs:
+  build:
+    name: Build Job
+    runs-on: self-hosted
+
+    outputs:
+      branchName: ${{ steps.split.outputs._0 }}
+      assemblyVersion: ${{ steps.buildNumber.outputs.number }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    - name: Generate Build Version Number
+      id: versionNumber
+      uses: einaregilsson/build-number@v3
+      with:
+        token: ${{secrets.github_token}}
+
+    - uses: rishabhgupta/split-by@v1
+      id: split
+      with:
+          string: ${{ github.ref_name }}
+          split-by: '/'
+
+    - name : Get Release Version Number
+      id: buildNumber
+      run: |
+        if ( "${{ steps.split.outputs._0 }}" -eq "release" ){
+          echo "::set-output name=number::${{ steps.split.outputs._1 }}.${{ steps.versionNumber.outputs.build_number }}" ;
+        }
+        else {
+          echo "::set-output name=number::0.0.${{ steps.versionNumber.outputs.build_number }}" ; 
+        }
+
+    - name: "Print Major Minor Version"
+      run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.projectName }}\${{ env.projectName }}.csproj
+
+    - name: Build
+      run: dotnet build ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test RunnerTestProject\RunnerTestProject.csproj --filter Category!=Integration --configuration Release --no-restore
+
+    - name: Publish
+      if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
+      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish /p:AssemblyVersion=${{ steps.buildNumber.outputs.number }}
+
+    - name: Upload Artifacts
+      if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
+        path: .\Publish
+
+  deploy_to_dev:
+    name: Deploy To Dev
+    needs: build
+    runs-on: self-hosted
+    uses: ./.github/workflows/deploy.yml
+    with:
+      projectName: "RunnerTest"
+      appPoolName: "DefaultAppPool"
+      targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
+      assemblyVersion: "0.0.71"
