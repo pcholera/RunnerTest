@@ -72,10 +72,10 @@ jobs:
   deploy_to_dev:
     name: Deploy To Dev
     needs: build
-    if: needs.build.outputs.branchName == 'develop'
+    if: needs.build.outputs.branchName == 'main'
     uses: ./.github/workflows/deploy.yml
     with:
-      projectName: "RunnerTest"
-      appPoolName: "DefaultAppPool"
-      targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
-      assemblyVersion: "0.0.71"
+      projectName: ${{ env.projectName }}
+      appPoolName: ${{ env.devAppPoolName }} 
+      targetLocation: ${{ env.devTargetLocation }}
+      assemblyVersion: ${{ needs.build.outputs.assemblyVersion }}
