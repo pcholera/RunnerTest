@@ -71,9 +71,9 @@ jobs:
 
   deploy_to_dev:
     name: Deploy To Dev
-    needs: build
-    uses: ./.github/workflows/deploy.yml
-    with:
-      projectName: "RunnerTest"
-      appPoolName: "DefaultAppPool"
-      targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
+      uses: ./.github/workflows/deploy.yml
+      with:
+        projectName: "RunnerTest"
+        appPoolName: "DefaultAppPool"
+        targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
+        assemblyVersion: "0.0.71"
