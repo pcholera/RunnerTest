@@ -50,7 +50,7 @@ jobs:
     - name: Restore dependencies
       run: |
         dotnet restore ${{ env.projectName }}\${{ env.projectName }}.csproj
-        dotnet restore RunnerTestProject\RunnerTestProject.csproj.csproj
+        dotnet restore RunnerTestProject\RunnerTestProject.csproj
 
     - name: Build
       run: |
