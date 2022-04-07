@@ -1,0 +1,21 @@
+name: Merge Release Changes To Main
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:    
+      - 'releases/**'
+  
+jobs:
+  merge-branch:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Merge Release Changes To Main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ github.token }}
