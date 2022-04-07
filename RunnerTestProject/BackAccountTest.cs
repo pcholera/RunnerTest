@@ -36,7 +36,7 @@ namespace RunnerTestProject
             double beginningBalance = 50;
             double debitAmount = 20;
             double creditAmount = 20;
-            double expected = 51;
+            double expected = 50;
 
             BankAccount account = new BankAccount("Parshad Cholera", beginningBalance);
             account.Debit(debitAmount);
