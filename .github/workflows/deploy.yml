@@ -43,7 +43,10 @@ jobs:
 
       - name: Publish File To Server
         run: |
-          Remove-Item -Recurse "${{ inputs.targetLocation }}"
+          if (test-path "${{ inputs.targetLocation }}")
+          {
+            Remove-Item -Recurse "${{ inputs.targetLocation }}"
+          }
           Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ inputs.targetLocation }}" -recurse -Force
 
       - name: Start App Pool
