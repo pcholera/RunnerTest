@@ -72,7 +72,6 @@ jobs:
   deploy_to_dev:
     name: Deploy To Dev
     needs: build
-    if: steps.split.outputs._0 == 'develop'
     uses: ./.github/workflows/deploy.yml
     with:
       projectName: "RunnerTest"
