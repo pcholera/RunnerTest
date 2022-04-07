@@ -75,7 +75,7 @@ jobs:
     if: needs.build.outputs.branchName == 'main'
     uses: ./.github/workflows/deploy.yml
     with:
-      projectName: ${{ env.projectName }}
-      appPoolName: ${{ env.devAppPoolName }} 
-      targetLocation: ${{ env.devTargetLocation }}
+      projectName: "RunnerTest"
+      appPoolName: "DefaultAppPool"
+      targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
       assemblyVersion: ${{ needs.build.outputs.assemblyVersion }}
