@@ -7,6 +7,7 @@ env:
 
 jobs:
   build:
+    name: Build Job
     runs-on: self-hosted
 
     steps:
@@ -53,11 +54,23 @@ jobs:
 
     - name: Publish
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
-      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish
+      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish /p:AssemblyVersion=${{ steps.buildNumber.outputs.number }}
 
     - name: Upload Artifacts
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.projectName }}
+        name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
         path: .\Publish
+
+  deploy_to_dev:
+    name: Deploy To Dev
+    needs: build
+    if: steps.split.outputs._0 == 'develop'
+    runs-on: self-hosted
+      steps:
+        - name: Download Artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
+            path: .\Publish_Artifacts
