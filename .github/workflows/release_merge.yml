@@ -13,9 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      # - name: Merge Release Changes To Main
+      #   uses: devmasx/merge-branch@master
+      #   with:
+      #     type: now
+      #     target_branch: main
+      #     github_token: ${{ github.token }}
+
       - name: Merge Release Changes To Main
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          target_branch: main
-          github_token: ${{ github.token }}
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}"
+          git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
+          git status
+          git pull
+          git checkout main
+          git status
+          git checkout "$GITHUB_HEAD_REF"
+          git merge main --no-edit
+          git push
+          git status
