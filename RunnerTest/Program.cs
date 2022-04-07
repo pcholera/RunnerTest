@@ -9,7 +9,7 @@ namespace RunnerTest
             BankAccount ba = new BankAccount("Parshad Cholera", 20);
 
             ba.Credit(50);
-            ba.Debit(25);
+            ba.Debit(40);
             Console.WriteLine("Current balance is ${0}", ba.Balance);
             Console.ReadLine();
         }
