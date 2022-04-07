@@ -4,8 +4,6 @@ on: push
 
 env:
   projectName: "RunnerTest"
-  devAppPoolName: "DefaultAppPool"
-  devTargetLocation: "C:\\Hartree\\Sites\\RunnerTest"
 
 jobs:
   build:
