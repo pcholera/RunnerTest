@@ -72,6 +72,7 @@ jobs:
   deploy_to_dev:
     name: Deploy To Dev
     needs: build
+    if: needs.build.outputs.branchName == 'develop'
     uses: ./.github/workflows/deploy.yml
     with:
       projectName: "RunnerTest"

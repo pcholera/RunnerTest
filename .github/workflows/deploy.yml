@@ -27,7 +27,6 @@ on:
 jobs:
   deploy_to_dev:
     name: Deploy To Dev
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
     steps:
       - name: Download Artifacts
