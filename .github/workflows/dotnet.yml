@@ -68,9 +68,9 @@ jobs:
     needs: build
     if: steps.split.outputs._0 == 'develop'
     runs-on: self-hosted
-      steps:
-        - name: Download Artifacts
-          uses: actions/upload-artifact@v3
-          with:
-            name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
-            path: .\Publish_Artifacts
+    steps:
+      - name: Download Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
+          path: .\Publish_Artifacts
