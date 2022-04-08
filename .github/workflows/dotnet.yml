@@ -71,13 +71,6 @@ jobs:
         name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
         path: .\Publish
 
-    - name: Upload Artifacts
-      if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
-        path: .\Publish
-
     - name: Save Artifact Locally
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
       run: |
@@ -89,7 +82,6 @@ jobs:
     if: needs.build.outputs.branchName == 'main'
     uses: ./.github/workflows/deploy.yml
     with:
-      projectName: "RunnerTest"
       appPoolName: "DefaultAppPool"
       targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
       assemblyVersion: ${{ needs.build.outputs.assemblyVersion }}

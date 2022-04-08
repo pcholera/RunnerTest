@@ -1,13 +1,8 @@
-name: Deploy_Manual
+name: Deploy Build To Server
 
 on:
   workflow_dispatch:
     inputs:
-      projectName:
-        description: 'Name Of Project'
-        default: 'RunnerTest'
-        required: true
-        type: string
       appPoolName:
         description: 'IIS Application Pool Name'
         default: 'DefaultAppPool'
@@ -31,7 +26,6 @@ jobs:
     name: Deploy
     uses: ./.github/workflows/deploy.yml
     with:
-      projectName: ${{ github.event.inputs.projectName }}
       appPoolName: ${{ github.event.inputs.appPoolName }}
       targetLocation: ${{ github.event.inputs.targetLocation }}
       assemblyVersion: ${{ github.event.inputs.assemblyVersion }}
