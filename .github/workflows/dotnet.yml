@@ -71,13 +71,23 @@ jobs:
         name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
         path: .\Publish
 
+  # deploy_to_dev:
+  #   name: Deploy To Dev
+  #   needs: build
+  #   if: needs.build.outputs.branchName == 'main'
+  #   uses: ./.github/workflows/deploy.yml
+  #   with:
+  #     projectName: "RunnerTest"
+  #     appPoolName: "DefaultAppPool"
+  #     targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
+  #     assemblyVersion: ${{ needs.build.outputs.assemblyVersion }}
+
   deploy_to_dev:
     name: Deploy To Dev
     needs: build
     if: needs.build.outputs.branchName == 'main'
-    uses: ./.github/workflows/deploy.yml
+    uses: benc-uk/workflow-dispatch@v1
     with:
-      projectName: "RunnerTest"
-      appPoolName: "DefaultAppPool"
-      targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
-      assemblyVersion: ${{ needs.build.outputs.assemblyVersion }}
+      workflow: Deploy
+      token: ${{ secrets.PERSONAL_TOKEN }}
+      inputs: '{ "projectName": "RunnerTest", "appPoolName": "DefaultAppPool", "targetLocation": "C:\\Hartree\\Sites\\RunnerTest", "assemblyVersion": ${{ needs.build.outputs.assemblyVersion }} }'

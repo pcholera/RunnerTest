@@ -1,40 +1,31 @@
 name: Deploy
 
 on:
-  workflow_call:
-    inputs:
-      projectName:
-        description: 'Name Of Project'
-        default: 'RunnerTest'
-        required: true
-        type: string
-      appPoolName:
-        description: 'IIS Application Pool Name'
-        default: 'DefaultAppPool'
-        required: true
-        type: string
-      targetLocation:
-        description: 'Trarget Location For Application'
-        default: 'C:\\Hartree\\Sites\\RunnerTest'
-        required: true
-        type: string
-      assemblyVersion:
-        description: 'Assembly Version'
-        default: ''
-        required: true
-        type: string
+  # workflow_call:
+  #   inputs:
+  #     projectName:
+  #       description: 'Name Of Project'
+  #       default: 'RunnerTest'
+  #       required: true
+  #       type: string
+  #     appPoolName:
+  #       description: 'IIS Application Pool Name'
+  #       default: 'DefaultAppPool'
+  #       required: true
+  #       type: string
+  #     targetLocation:
+  #       description: 'Trarget Location For Application'
+  #       default: 'C:\\Hartree\\Sites\\RunnerTest'
+  #       required: true
+  #       type: string
+  #     assemblyVersion:
+  #       description: 'Assembly Version'
+  #       default: ''
+  #       required: true
+  #       type: string
 
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning' 
-        type: choice
-        options:
-        - info
-        - warning
-        - debug 
       projectName:
         description: 'Name Of Project'
         default: 'RunnerTest'
@@ -44,7 +35,9 @@ on:
         description: 'IIS Application Pool Name'
         default: 'DefaultAppPool'
         required: true
-        type: string
+        type: choice
+        options:
+        - DefaultAppPool
       targetLocation:
         description: 'Trarget Location For Application'
         default: 'C:\\Hartree\\Sites\\RunnerTest'
@@ -64,22 +57,42 @@ jobs:
     name: Deploy
     runs-on: self-hosted
     steps:
+      # - name: Download Artifacts
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: ${{ inputs.projectName }} - ${{ inputs.assemblyVersion }}
+      #     path: ${{ env.sourceLocation }}
+
+      # - name: Stop App Pool
+      #   run: .\DeploymentScript\StopAppPool.ps1 ${{ inputs.appPoolName }} 
+
+      # - name: Publish File To Server
+      #   run: |
+      #     if (test-path "${{ inputs.targetLocation }}")
+      #     {
+      #       Remove-Item -Recurse "${{ inputs.targetLocation }}"
+      #     }
+      #     Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ inputs.targetLocation }}" -recurse -Force
+
+      # - name: Start App Pool
+      #   run: .\DeploymentScript\StartAppPool.ps1 ${{ inputs.appPoolName }}
+
       - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.projectName }} - ${{ inputs.assemblyVersion }}
+          name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
           path: ${{ env.sourceLocation }}
 
       - name: Stop App Pool
-        run: .\DeploymentScript\StopAppPool.ps1 ${{ inputs.appPoolName }} 
+        run: .\DeploymentScript\StopAppPool.ps1 ${{ github.event.inputs.appPoolName }} 
 
       - name: Publish File To Server
         run: |
-          if (test-path "${{ inputs.targetLocation }}")
+          if (test-path "${{ github.event.inputs.targetLocation }}")
           {
-            Remove-Item -Recurse "${{ inputs.targetLocation }}"
+            Remove-Item -Recurse "${{ github.event.inputs.targetLocation }}"
           }
-          Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ inputs.targetLocation }}" -recurse -Force
+          Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ github.event.inputs.targetLocation }}" -recurse -Force
 
       - name: Start App Pool
-        run: .\DeploymentScript\StartAppPool.ps1 ${{ inputs.appPoolName }}
+        run: .\DeploymentScript\StartAppPool.ps1 ${{ github.event.inputs.appPoolName }}
