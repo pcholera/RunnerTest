@@ -1,95 +1,55 @@
-name: Build
+name: Deploy
 
-on: push
+on:
+  workflow_dispatch:
+    inputs:
+      projectName:
+        description: 'Name Of Project'
+        default: 'RunnerTest'
+        required: true
+        type: string
+      appPoolName:
+        description: 'IIS Application Pool Name'
+        default: 'DefaultAppPool'
+        required: true
+        type: choice
+        options:
+        - DefaultAppPool
+      targetLocation:
+        description: 'Trarget Location For Application'
+        default: 'C:\\Hartree\\Sites\\RunnerTest'
+        required: true
+        type: string
+      assemblyVersion:
+        description: 'Assembly Version'
+        default: ''
+        required: true
+        type: string
 
 env:
-  projectName: "RunnerTest"
+  sourceLocation: ".\\Publish_Artifacts"
 
 jobs:
-  build:
-    name: Build Job
+  deploy:
+    name: Deploy
     runs-on: self-hosted
-
-    outputs:
-      branchName: ${{ steps.split.outputs._0 }}
-      assemblyVersion: ${{ steps.buildNumber.outputs.number }}
-
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-
-    - name: Generate Build Version Number
-      id: versionNumber
-      uses: einaregilsson/build-number@v3
-      with:
-        token: ${{secrets.github_token}}
-
-    - uses: rishabhgupta/split-by@v1
-      id: split
-      with:
-          string: ${{ github.ref_name }}
-          split-by: '/'
-
-    - name : Get Release Version Number
-      id: buildNumber
-      run: |
-        if ( "${{ steps.split.outputs._0 }}" -eq "release" ){
-          echo "::set-output name=number::${{ steps.split.outputs._1 }}.${{ steps.versionNumber.outputs.build_number }}" ;
-        }
-        else {
-          echo "::set-output name=number::0.0.${{ steps.versionNumber.outputs.build_number }}" ; 
-        }
-
-    - name: "Print Major Minor Version"
-      run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
-
-    - name: Restore dependencies
-      run: |
-        dotnet restore ${{ env.projectName }}\${{ env.projectName }}.csproj
-        dotnet restore RunnerTestProject\RunnerTestProject.csproj
-
-    - name: Build
-      run: |
-        dotnet build ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore
-        dotnet build RunnerTestProject\RunnerTestProject.csproj --configuration Release --no-restore
-
-    - name: Test
-      run: dotnet test RunnerTestProject\RunnerTestProject.csproj --configuration Release --no-restore
-
-    - name: Publish
-      if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
-      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish /p:AssemblyVersion=${{ steps.buildNumber.outputs.number }}
-
-    - name: Upload Artifacts
-      if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
-        path: .\Publish
-
-  # deploy_to_dev:
-  #   name: Deploy To Dev
-  #   needs: build
-  #   if: needs.build.outputs.branchName == 'main'
-  #   uses: ./.github/workflows/deploy.yml
-  #   with:
-  #     projectName: "RunnerTest"
-  #     appPoolName: "DefaultAppPool"
-  #     targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
-  #     assemblyVersion: ${{ needs.build.outputs.assemblyVersion }}
-
-  deploy_to_dev:
-    name: Deploy To Dev
-    needs: build
-    runs-on: self-hosted
-    if: needs.build.outputs.branchName == 'main'
-    steps:
-      - uses: benc-uk/workflow-dispatch@v1
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
         with:
-          workflow: Deploy
-          token: ${{ secrets.GITHUB_TOKEN }}
-          inputs: '{ "projectName": "RunnerTest", "appPoolName": "DefaultAppPool", "targetLocation": "C:\\Hartree\\Sites\\RunnerTest", "assemblyVersion": "${{ needs.build.outputs.assemblyVersion }}" }'
+          name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
+          path: ${{ env.sourceLocation }}
+
+      - name: Stop App Pool
+        run: .\DeploymentScript\StopAppPool.ps1 ${{ github.event.inputs.appPoolName }} 
+
+      - name: Publish File To Server
+        run: |
+          if (test-path "${{ github.event.inputs.targetLocation }}")
+          {
+            Remove-Item -Recurse "${{ github.event.inputs.targetLocation }}"
+          }
+          Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ github.event.inputs.targetLocation }}" -recurse -Force
+
+      - name: Start App Pool
+        run: .\DeploymentScript\StartAppPool.ps1 ${{ github.event.inputs.appPoolName }}
