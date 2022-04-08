@@ -85,9 +85,11 @@ jobs:
   deploy_to_dev:
     name: Deploy To Dev
     needs: build
+    runs-on: self-hosted
     if: needs.build.outputs.branchName == 'main'
-    uses: benc-uk/workflow-dispatch@v1
-    with:
-      workflow: Deploy
-      token: ${{ secrets.PERSONAL_TOKEN }}
-      inputs: '{ "projectName": "RunnerTest", "appPoolName": "DefaultAppPool", "targetLocation": "C:\\Hartree\\Sites\\RunnerTest", "assemblyVersion": ${{ needs.build.outputs.assemblyVersion }} }'
+    steps:
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Deploy
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          inputs: '{ "projectName": "RunnerTest", "appPoolName": "DefaultAppPool", "targetLocation": "C:\\Hartree\\Sites\\RunnerTest", "assemblyVersion": ${{ needs.build.outputs.assemblyVersion }} }'
