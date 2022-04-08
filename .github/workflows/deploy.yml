@@ -24,6 +24,38 @@ on:
         required: true
         type: string
 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+      projectName:
+        description: 'Name Of Project'
+        default: 'RunnerTest'
+        required: true
+        type: string
+      appPoolName:
+        description: 'IIS Application Pool Name'
+        default: 'DefaultAppPool'
+        required: true
+        type: string
+      targetLocation:
+        description: 'Trarget Location For Application'
+        default: 'C:\\Hartree\\Sites\\RunnerTest'
+        required: true
+        type: string
+      assemblyVersion:
+        description: 'Assembly Version'
+        default: ''
+        required: true
+        type: string
+
 env:
   sourceLocation: ".\\Publish_Artifacts"
 
