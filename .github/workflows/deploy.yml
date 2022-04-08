@@ -37,7 +37,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
+          #name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
           path: ${{ env.sourceLocation }}
 
       - name: Stop App Pool
