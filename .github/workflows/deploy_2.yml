@@ -34,20 +34,11 @@ jobs:
     name: Deploy
     runs-on: self-hosted
     steps:
-      # - name: Download Artifacts
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
-      #     path: ${{ env.sourceLocation }}
-
       - name: Download Artifacts
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          workflow: Build
-          workflow_conclusion: success
-          #name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
-          path: ${{ env.sourceLocation }}
+        uses: actions/download-artifact@v3
+        # with:
+        #   name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
+        #   path: ${{ env.sourceLocation }}
 
       - name: Stop App Pool
         run: .\DeploymentScript\StopAppPool.ps1 ${{ github.event.inputs.appPoolName }} 
