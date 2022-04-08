@@ -62,14 +62,14 @@ jobs:
 
     - name: Publish
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
-      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish /p:AssemblyVersion=${{ steps.buildNumber.outputs.number }}
+      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output ..\Publish\${{ steps.buildNumber.outputs.number }} /p:AssemblyVersion=${{ steps.buildNumber.outputs.number }}
 
     - name: Upload Artifacts
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
-        path: .\Publish
+        path: ..\Publish\${{ env.projectName }}\${{ steps.buildNumber.outputs.number }}
 
   deploy_to_dev:
     name: Deploy To Dev

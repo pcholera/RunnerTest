@@ -26,33 +26,8 @@ on:
         required: true
         type: string
 
-env:
-  sourceLocation: ".\\Publish_Artifacts"
-
 jobs:
   deploy:
-    # name: Deploy
-    # runs-on: self-hosted
-    # steps:
-    #   - name: Download Artifacts
-    #     uses: actions/download-artifact@v3
-    #     with:
-    #       name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
-    #       path: ${{ env.sourceLocation }}
-
-    #   - name: Stop App Pool
-    #     run: .\DeploymentScript\StopAppPool.ps1 ${{ github.event.inputs.appPoolName }} 
-
-    #   - name: Publish File To Server
-    #     run: |
-    #       if (test-path "${{ github.event.inputs.targetLocation }}")
-    #       {
-    #         Remove-Item -Recurse "${{ github.event.inputs.targetLocation }}"
-    #       }
-    #       Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ github.event.inputs.targetLocation }}" -recurse -Force
-
-    #   - name: Start App Pool
-    #     run: .\DeploymentScript\StartAppPool.ps1 ${{ github.event.inputs.appPoolName }}
     name: Deploy
     uses: ./.github/workflows/deploy.yml
     with:
