@@ -46,7 +46,7 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow: Build
           workflow_conclusion: success
-          name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
+          #name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
           path: ${{ env.sourceLocation }}
 
       - name: Stop App Pool
