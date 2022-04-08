@@ -34,11 +34,13 @@ jobs:
     name: Deploy
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
+
       - name: Download Artifacts
         uses: actions/download-artifact@v3
-        # with:
-        #   name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
-        #   path: ${{ env.sourceLocation }}
+        with:
+          name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
+          path: ${{ env.sourceLocation }}
 
       - name: Stop App Pool
         run: .\DeploymentScript\StopAppPool.ps1 ${{ github.event.inputs.appPoolName }} 
