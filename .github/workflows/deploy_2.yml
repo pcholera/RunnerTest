@@ -31,27 +31,32 @@ env:
 
 jobs:
   deploy:
+    # name: Deploy
+    # runs-on: self-hosted
+    # steps:
+    #   - name: Download Artifacts
+    #     uses: actions/download-artifact@v3
+    #     with:
+    #       name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
+    #       path: ${{ env.sourceLocation }}
+
+    #   - name: Stop App Pool
+    #     run: .\DeploymentScript\StopAppPool.ps1 ${{ github.event.inputs.appPoolName }} 
+
+    #   - name: Publish File To Server
+    #     run: |
+    #       if (test-path "${{ github.event.inputs.targetLocation }}")
+    #       {
+    #         Remove-Item -Recurse "${{ github.event.inputs.targetLocation }}"
+    #       }
+    #       Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ github.event.inputs.targetLocation }}" -recurse -Force
+
+    #   - name: Start App Pool
+    #     run: .\DeploymentScript\StartAppPool.ps1 ${{ github.event.inputs.appPoolName }}
     name: Deploy
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ github.event.inputs.projectName }} - ${{ github.event.inputs.assemblyVersion }}
-          path: ${{ env.sourceLocation }}
-
-      - name: Stop App Pool
-        run: .\DeploymentScript\StopAppPool.ps1 ${{ github.event.inputs.appPoolName }} 
-
-      - name: Publish File To Server
-        run: |
-          if (test-path "${{ github.event.inputs.targetLocation }}")
-          {
-            Remove-Item -Recurse "${{ github.event.inputs.targetLocation }}"
-          }
-          Copy-Item -Path ${{ env.sourceLocation }} -Destination "${{ github.event.inputs.targetLocation }}" -recurse -Force
-
-      - name: Start App Pool
-        run: .\DeploymentScript\StartAppPool.ps1 ${{ github.event.inputs.appPoolName }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      projectName: ${{ github.event.inputs.projectName }}
+      appPoolName: ${{ github.event.inputs.appPoolName }}
+      targetLocation: ${{ github.event.inputs.targetLocation }}
+      assemblyVersion: ${{ github.event.inputs.assemblyVersion }}
