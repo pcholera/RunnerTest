@@ -62,14 +62,26 @@ jobs:
 
     - name: Publish
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
-      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output ..\Publish\${{ steps.buildNumber.outputs.number }} /p:AssemblyVersion=${{ steps.buildNumber.outputs.number }}
+      run: dotnet publish ${{ env.projectName }}\${{ env.projectName }}.csproj --configuration Release --no-restore --output .\Publish /p:AssemblyVersion=${{ steps.buildNumber.outputs.number }}
 
     - name: Upload Artifacts
       if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
-        path: ..\Publish\${{ env.projectName }}\${{ steps.buildNumber.outputs.number }}
+        path: .\Publish
+
+    - name: Upload Artifacts
+      if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.projectName }} - ${{ steps.buildNumber.outputs.number }}
+        path: .\Publish
+
+    - name: Save Artifact Locally
+      if: steps.split.outputs._0 == 'main' || steps.split.outputs._0 == 'release' || steps.split.outputs._0 == 'hotfix'
+      run: |
+        Copy-Item -Path .\Publish -Destination ..\Publish\${{ env.projectName }}\${{ steps.buildNumber.outputs.number }} -recurse -Force
 
   deploy_to_dev:
     name: Deploy To Dev
@@ -81,15 +93,3 @@ jobs:
       appPoolName: "DefaultAppPool"
       targetLocation: "C:\\Hartree\\Sites\\RunnerTest"
       assemblyVersion: ${{ needs.build.outputs.assemblyVersion }}
-
-  # deploy_to_dev:
-  #   name: Deploy To Dev
-  #   needs: build
-  #   runs-on: self-hosted
-  #   if: needs.build.outputs.branchName == 'main'
-  #   steps:
-  #     - uses: benc-uk/workflow-dispatch@v1
-  #       with:
-  #         workflow: Deploy
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         inputs: '{ "projectName": "RunnerTest", "appPoolName": "DefaultAppPool", "targetLocation": "C:\\Hartree\\Sites\\RunnerTest", "assemblyVersion": "${{ needs.build.outputs.assemblyVersion }}" }'
