@@ -36,7 +36,7 @@ jobs:
     - name : Get Release Version Number
       id: buildNumber
       run: |
-        $name = ${{ github.ref_name }};
+        $name = "${{ github.ref_name }}";
         if ( $name.StartsWith('v2') ){
           $name = $name.replace('hello','hi')
           echo "::set-output name=number::$name" ;
