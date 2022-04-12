@@ -48,6 +48,10 @@ jobs:
     - name: "Print Major Minor Version"
       run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
 
+    - name: Ensure GitHub NuGet Source
+      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
+      run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n github --skip-duplicate -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+
     - name: Build
       run: dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release
 
@@ -57,10 +61,6 @@ jobs:
     - name: Pack
       if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
       run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.buildNumber.outputs.number }} --no-build --output .
-
-    - name: Ensure GitHub NuGet Source
-      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
-      run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n github -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
     - name: Push
       if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
