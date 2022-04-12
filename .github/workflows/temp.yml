@@ -43,7 +43,7 @@ jobs:
 
     - name : Get Release Version Number
       if: startsWith(github.ref_name, 'v2')
-      run: echo "package_version=${{ github.ref_name }}" >> $GITHUB_ENV;
+      run: echo "package_version=${{ github.ref_name }} | sed 's/v//'" >> $GITHUB_ENV;
 
     - name: "Print Major Minor Version"
       run: echo "Version = $package_version"
