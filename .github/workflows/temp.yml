@@ -41,6 +41,11 @@ jobs:
       id: buildNumber
       run: |
         #!/bin/bash
+        for (( counter=10; counter>0; counter-- ))
+        do
+          echo -n "$counter "
+        done
+        printf "\n"
         name = "${{ github.ref_name }}";
         if ( $name.StartsWith('v2') ){
           $name = $name.replace('v2','2')
