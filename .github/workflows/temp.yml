@@ -69,7 +69,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{ github.token }}
 
     - name: Cleanup Github Nuget Source
-      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
+      if: always() && (steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2'))
       continue-on-error: true
       run: dotnet nuget remove source github
 
