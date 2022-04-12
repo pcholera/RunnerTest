@@ -12,6 +12,9 @@ jobs:
 
     runs-on: self-hosted
 
+    outputs:
+      branchName: ${{ steps.split.outputs._0 }}
+
     steps:
     - uses: actions/checkout@v2
 
@@ -49,7 +52,7 @@ jobs:
       run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
 
     - name: Ensure GitHub NuGet Source
-      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
+      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2')
       run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n github -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
     - name: Build
@@ -59,24 +62,28 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
+      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2')
       run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.buildNumber.outputs.number }} --no-build --output .
 
     - name: Push
-      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
+      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2')
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate --source github
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
 
     - name: Cleanup Github Nuget Source
-      if: always() && (steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2'))
+      if: always() && (steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2'))
       continue-on-error: true
       run: dotnet nuget remove source github
 
-    - name: Auto Merge release to main
-      if: steps.split.outputs._0 == 'release'
-      uses: devmasx/merge-branch@v1.3.1
-      with:
-        type: now
-        target_branch: main
-        github_token: ${{ github.token }}
+  auto_merge_release_to_main:
+    needs: build
+    if: needs.build.outputs.branchName == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: devmasx/merge-branch@v1.3.1
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ github.token }}
