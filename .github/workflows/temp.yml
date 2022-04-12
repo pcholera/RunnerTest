@@ -22,6 +22,7 @@ jobs:
 
     - name: Set VERSION variable
       id: versionNumber
+      if: startsWith(github.ref_name, 'v2') != true
       uses: einaregilsson/build-number@v3
       with:
         token: ${{secrets.github_token}}
@@ -35,8 +36,10 @@ jobs:
     - name : Get Release Version Number
       id: buildNumber
       run: |
-        if ( "${{ steps.split.outputs._0 }}" -eq "release" ){
-          echo "::set-output name=number::${{ steps.split.outputs._1 }}.${{ steps.versionNumber.outputs.build_number }}" ;
+        $name = ${{ github.ref_name }};
+        if ( $name.StartsWith('v2') ){
+          $name = $name.replace('hello','hi')
+          echo "::set-output name=number::$name" ;
         }
         else {
           echo "::set-output name=number::0.0.${{ steps.versionNumber.outputs.build_number }}" ; 
