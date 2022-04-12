@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-
     runs-on: self-hosted
 
     steps:
@@ -60,7 +59,7 @@ jobs:
 
     - name: Push
       if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
-      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
+      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate --source https://github.com/pcholera/RunnerTest
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
 
