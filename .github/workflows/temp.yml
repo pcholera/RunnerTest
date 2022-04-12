@@ -44,7 +44,7 @@ jobs:
     - name: "Fetch Release Version Number"
       id: releaseNumber
       if: startsWith(github.ref_name, 'v2')
-      run: echo "::set-output name=number::${{ github.ref_name }} | sed 's/v//'""
+      run: echo "::set-output name=number::${{ github.ref_name }} | sed 's/v//'"
 
     - name : Store Release Version Number
       if: startsWith(github.ref_name, 'v2')
