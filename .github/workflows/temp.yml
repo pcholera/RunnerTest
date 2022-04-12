@@ -52,19 +52,19 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      if: steps.split.outputs._0 == 'develop'
+      if: steps.split.outputs._0 == 'main'
       run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.buildNumber.outputs.number }} --no-build --output .
 
     - name: Push
-      if: steps.split.outputs._0 == 'develop'
+      if: steps.split.outputs._0 == 'main'
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
 
-    - name: Auto Merge release to develop
+    - name: Auto Merge release to main
       if: steps.split.outputs._0 == 'release'
       uses: devmasx/merge-branch@v1.3.1
       with:
         type: now
-        target_branch: develop
+        target_branch: main
         github_token: ${{ github.token }}
