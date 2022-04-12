@@ -38,7 +38,7 @@ jobs:
       run: |
         $name = "${{ github.ref_name }}";
         if ( $name.StartsWith('v2') ){
-          $name = $name.replace('hello','hi')
+          $name = $name.replace('v2','2')
           echo "::set-output name=number::$name" ;
         }
         else {
@@ -55,11 +55,11 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      if: steps.split.outputs._0 == 'main'
+      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
       run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.buildNumber.outputs.number }} --no-build --output .
 
     - name: Push
-      if: steps.split.outputs._0 == 'main'
+      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
