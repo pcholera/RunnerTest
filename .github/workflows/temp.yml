@@ -26,7 +26,7 @@ jobs:
 
     - name: Set VERSION variable
       id: versionNumber
-      if: startsWith(github.ref_name, 'v2') != true
+      if: startsWith(github.ref_name, '20') != true
       uses: einaregilsson/build-number@v3
       with:
         token: ${{secrets.github_token}}
@@ -38,18 +38,18 @@ jobs:
           split-by: '/'
 
     - name : Get Version Number
-      if: startsWith(github.ref_name, 'v2') != true
+      if: startsWith(github.ref_name, '20') != true
       run: echo "package_version=0.0.${{ steps.versionNumber.outputs.build_number }}" >> $GITHUB_ENV;
 
     - name : Store Release Version Number
-      if: startsWith(github.ref_name, 'v2')
+      if: startsWith(github.ref_name, '20')
       run: echo "package_version=${{ github.ref_name }}" >> $GITHUB_ENV;
 
     - name: "Print Major Minor Version"
       run: echo "Version = $package_version"
 
     - name: Ensure GitHub NuGet Source
-      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2')
+      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, '20')
       run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n github -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
     - name: Build
@@ -59,17 +59,17 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2')
+      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, '20')
       run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=$package_version --no-build --output .
 
     - name: Push
-      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2')
+      if: steps.split.outputs._0 == 'main' || startsWith(github.ref_name, '20')
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate --source github
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
 
     - name: Cleanup Github Nuget Source
-      if: always() && (steps.split.outputs._0 == 'main' || startsWith(github.ref_name, 'v2'))
+      if: always() && (steps.split.outputs._0 == 'main' || startsWith(github.ref_name, '20'))
       continue-on-error: true
       run: dotnet nuget remove source github
 
