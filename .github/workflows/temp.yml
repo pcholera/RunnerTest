@@ -10,7 +10,8 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    #runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     outputs:
       branchName: ${{ steps.split.outputs._0 }}
@@ -39,7 +40,8 @@ jobs:
     - name : Get Release Version Number
       id: buildNumber
       run: |
-        $name = "${{ github.ref_name }}";
+        #!/bin/bash
+        name = "${{ github.ref_name }}";
         if ( $name.StartsWith('v2') ){
           $name = $name.replace('v2','2')
           echo "::set-output name=number::$name" ;
