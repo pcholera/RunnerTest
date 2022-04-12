@@ -46,9 +46,10 @@ jobs:
           echo -n "$counter "
         done
         printf "\n"
-        name = "${{ github.ref_name }}";
+        valid=true
+        name="${{ github.ref_name }}";
         if ( $name.StartsWith('v2') ){
-          $name = $name.replace('v2','2')
+          $name=$name.replace('v2','2')
           echo "::set-output name=number::$name" ;
         }
         else {
