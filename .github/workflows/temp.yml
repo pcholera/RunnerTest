@@ -12,6 +12,9 @@ jobs:
 
     runs-on: self-hosted
 
+    outputs:
+      branchName: ${{ steps.split.outputs._0 }}
+
     steps:
     - uses: actions/checkout@v2
 
@@ -75,7 +78,7 @@ jobs:
 
   auto_merge_release_to_main:
     needs: build
-    if: startsWith(github.ref_name, 'v2')
+    if: steps.split.outputs._0 == 'release'
     runs-on: ununtu-latest
 
     steps:
