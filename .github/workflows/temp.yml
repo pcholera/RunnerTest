@@ -39,16 +39,13 @@ jobs:
 
     - name : Get Release Version Number
       id: buildNumber
-      run: |
-        #!/bin/bash
-        name="${{ github.ref_name }}";
-        if ($name == "v2*" ){
-          $name=$name.replace('v2','2')
-          echo "::set-output name=number::$name" ;
-        }
-        else {
-          echo "::set-output name=number::0.0.${{ steps.versionNumber.outputs.build_number }}" ; 
-        }
+      if: startsWith(github.ref_name, 'v2') != true
+      run: echo "::set-output name=number::0.0.${{ steps.versionNumber.outputs.build_number }}" ; 
+
+    - name : Get Release Version Number
+      id: buildNumber
+      if: startsWith(github.ref_name, 'v2')
+      run: echo "::set-output name=number::${{ github.ref_name }}";
 
     - name: "Print Major Minor Version"
       run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
