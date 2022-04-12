@@ -78,7 +78,7 @@ jobs:
 
   auto_merge_release_to_main:
     needs: build
-    if: steps.split.outputs._0 == 'release'
+    if: needs.build.outputs.branchName == 'release'
     runs-on: ununtu-latest
 
     steps:
