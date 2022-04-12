@@ -1,0 +1,70 @@
+name: Build
+
+on: 
+  push: 
+    branches:
+      - '**'
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1
+
+    - name: Set VERSION variable
+      id: versionNumber
+      uses: einaregilsson/build-number@v3
+      with:
+        token: ${{secrets.github_token}}
+
+    - uses: rishabhgupta/split-by@v1
+      id: split
+      with:
+          string: ${{ github.ref_name }}
+          split-by: '/'
+
+    - name : Get Release Version Number
+      id: buildNumber
+      run: |
+        if ( "${{ steps.split.outputs._0 }}" -eq "release" ){
+          echo "::set-output name=number::${{ steps.split.outputs._1 }}.${{ steps.versionNumber.outputs.build_number }}" ;
+        }
+        else {
+          echo "::set-output name=number::0.0.${{ steps.versionNumber.outputs.build_number }}" ; 
+        }
+
+    - name: "Print Major Minor Version"
+      run: echo "Version = ${{ steps.buildNumber.outputs.number }}"
+
+    - name: Build
+      run: dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release
+
+    - name: Test
+      run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
+
+    - name: Pack
+      if: steps.split.outputs._0 == 'develop'
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.buildNumber.outputs.number }} --no-build --output .
+
+    - name: Push
+      if: steps.split.outputs._0 == 'develop'
+      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
+      env:
+        NUGET_AUTH_TOKEN: ${{ github.token }}
+
+    - name: Auto Merge release to develop
+      if: steps.split.outputs._0 == 'release'
+      uses: devmasx/merge-branch@v1.3.1
+      with:
+        type: now
+        target_branch: develop
+        github_token: ${{ github.token }}
