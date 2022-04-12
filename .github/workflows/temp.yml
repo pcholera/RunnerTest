@@ -50,7 +50,7 @@ jobs:
 
     - name: Ensure GitHub NuGet Source
       if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
-      run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n github --skip-duplicate -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+      run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n testPackage -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
     - name: Build
       run: dotnet build RunnerTestProject/RunnerTestProject.csproj --configuration Release
@@ -64,14 +64,14 @@ jobs:
 
     - name: Push
       if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
-      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate --source github
+      run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate --source testPackage
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
 
     - name: Cleanup Github Nuget Source
-      if: always()
+      if: steps.split.outputs._0 == 'main' || "${{ github.ref_name }}".StartsWith('v2')
       continue-on-error: true
-      run: dotnet nuget remove source github
+      run: dotnet nuget remove source testPackage
 
     - name: Auto Merge release to main
       if: steps.split.outputs._0 == 'release'
