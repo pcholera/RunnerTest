@@ -42,9 +42,13 @@ jobs:
       run: echo "package_version=0.0.${{ steps.versionNumber.outputs.build_number }}" >> $GITHUB_ENV;
 
     - name: "Fetch Release Version Number"
-      id: releaseNumber
       if: startsWith(github.ref_name, 'v2')
-      run: echo "::set-output name=number::${{ github.ref_name }} | sed 's/v//'"
+      id: releaseNumber
+      run: |
+        ref_name=${{ github.ref_name }}
+        version=$(echo "$ref_name" | sed 's/v//')
+        echo "Relase Number = $version";
+        echo "::set-output name=number::$version";
 
     - name : Store Release Version Number
       if: startsWith(github.ref_name, 'v2')
