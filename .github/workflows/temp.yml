@@ -41,12 +41,14 @@ jobs:
       if: startsWith(github.ref_name, 'v2') != true
       run: echo "package_version=0.0.${{ steps.versionNumber.outputs.build_number }}" >> $GITHUB_ENV;
 
-    - name: "Print Version"
+    - name: "Fetch Release Version Number"
+      id: releaseNumber
+      if: startsWith(github.ref_name, 'v2')
       run: echo ${{ github.ref_name }} | sed 's/v//'
 
-    - name : Get Release Version Number
+    - name : Store Release Version Number
       if: startsWith(github.ref_name, 'v2')
-      run: echo "package_version=${{ github.ref_name | sed 's/v//' }}" >> $GITHUB_ENV;
+      run: echo "package_version=${{ github.ref_name }}" | sed 's/v//' >> $GITHUB_ENV;
 
     - name: "Print Major Minor Version"
       run: echo "Version = $package_version"
