@@ -18,12 +18,12 @@ runs:
   using: "composite"
   steps:
     - name : Get Version Number
-      pre-if: startsWith(github.ref, 'refs/tags/v') != true
+      if: startsWith(github.ref, 'refs/tags/v') != true
       run: echo "package_version=0.0.${{ inputs.buildNumber }}" >> $GITHUB_ENV;
       shell: bash
 
     - name : Get Release Version Number
-      pre-if: startsWith(github.ref, 'refs/tags/v')
+      if: startsWith(github.ref, 'refs/tags/v')
       run: echo "package_version=${github.ref:11}" >> $GITHUB_ENV;
       shell: bash
 
