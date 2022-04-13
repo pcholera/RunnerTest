@@ -1,44 +1,50 @@
 name: Get Build Version
-author: Parshad Cholera
-description: Generate Version Number For Regular Build And Get Release Version Number For Release Tag
+on:
+  workflow_call:
+    secrets:
+      github_token:
+        description: 'A token passed from the caller workflow'
+        required: false
 
-inputs:
-  buildNumber:
-    description: 'Build Number'
-    default: ''
-    required: false
-    type: string
-
-outputs:
-  buildVersion:
-    description: "Output Version Number"
-    value: ${{ steps.buildVersion.outputs.number }}
+    outputs:
+      buildVersion:
+        description: "Output Version Number"
+        value: ${{ steps.buildVersion.outputs.number }}
 
 env:
   GITHUB_REF: github.ref
 
-runs:
-  using: "composite"
-  steps:
-    - name : Get Version Number
-      if: startsWith(github.ref, 'refs/tags/v') != true
-      run: echo "package_version=0.0.${{ inputs.buildNumber }}" >> $GITHUB_ENV;
-      shell: bash
+jobs:
+  buildVersion:
+    runs-on: ubuntu-latest
 
-    - name: "Print Version Number"
-      run: echo "github ref = ${GITHUB_REF:11}"
-      shell: bash
+    steps:
+      - name: Generate Build Number
+        id: buildNumber
+        if: startsWith(github.ref, 'refs/tags/v') != true
+        uses: einaregilsson/build-number@v3
+        with:
+          token: ${{secrets.github_token}}
 
-    - name : Get Release Version Number
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: echo "package_version=${GITHUB_REF:11}" >> $GITHUB_ENV;
-      shell: bash
+      - name : Get Version Number
+        if: startsWith(github.ref, 'refs/tags/v') != true
+        run: echo "package_version=0.0.${{ inputs.buildNumber }}" >> $GITHUB_ENV;
+        shell: bash
 
-    - name: "Print Version Number"
-      run: echo "Version = $package_version"
-      shell: bash
+      - name: "Print Version Number"
+        run: echo "github ref = ${GITHUB_REF:11}"
+        shell: bash
 
-    - name: Version Number
-      id: buildVersion
-      run: echo "::set-output name=number::$package_version";
-      shell: bash
+      - name : Get Release Version Number
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "package_version=${GITHUB_REF:11}" >> $GITHUB_ENV;
+        shell: bash
+
+      - name: "Print Version Number"
+        run: echo "Version = $package_version"
+        shell: bash
+
+      - name: Version Number
+        id: buildVersion
+        run: echo "::set-output name=number::$package_version";
+        shell: bash
