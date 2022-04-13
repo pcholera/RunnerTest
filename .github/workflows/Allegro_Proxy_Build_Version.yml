@@ -1,40 +1,41 @@
 name: Get Build Version
+author: Parshad Cholera
+description: Generate Version Number For Regular Build And Get Release Version Number For Release Tag
 
-on:
-  workflow_call:
-    inputs:
-      branchReference:
-        description: 'Relase Tag Referene'
-        default: ''
-        required: true
-        type: string
+inputs:
+  branchReference:
+    description: 'Relase Tag Referene'
+    default: ''
+    required: true
+    type: string
 
-jobs:
-  tagVersion:
-    runs-on: ubuntu-latest
-    outputs:
-      buildVersion: ${{ steps.buildVersion.outputs.number }}
+outputs:
+  buildVersion:
+    description: "Output Version Number"
+    value: ${{ steps.buildVersion.outputs.number }}
 
-    steps:
-      - name: Set VERSION variable
-        id: versionNumber
-        if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v') != true
-        uses: einaregilsson/build-number@v3
-        with:
-          token: ${{secrets.github_token}}
+runs:
+  using: "composite"
+  steps:
+    - name: Set VERSION variable
+      id: versionNumber
+      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v') != true
+      uses: einaregilsson/build-number@v3
+      with:
+        token: ${{secrets.github_token}}
 
-      - name : Get Version Number
-        if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v') != true
-        run: echo "package_version=0.0.${{ steps.versionNumber.outputs.build_number }}" >> $GITHUB_ENV;
+    - name : Get Version Number
+      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v') != true
+      run: echo "package_version=0.0.${{ steps.versionNumber.outputs.build_number }}" >> $GITHUB_ENV;
 
-      - name : Get Release Version Number
-        if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
-        run: echo "package_version=${inputs.branchReference:11}" >> $GITHUB_ENV;
+    - name : Get Release Version Number
+      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
+      run: echo "package_version=${inputs.branchReference:11}" >> $GITHUB_ENV;
 
-      - name: "Print Version Number"
-        run: echo "Version = $package_version"
+    - name: "Print Version Number"
+      run: echo "Version = $package_version"
 
-      - name: Version Number
-        id: buildVersion
-        if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
-        run: echo "::set-output name=number::$package_version";
+    - name: Version Number
+      id: buildVersion
+      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
+      run: echo "::set-output name=number::$package_version";
