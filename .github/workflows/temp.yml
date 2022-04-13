@@ -24,11 +24,19 @@ jobs:
       with:
         dotnet-version: 3.1
 
+    - name: Generate Build Number
+      id: buildNumber
+      if: startsWith(github.ref, 'refs/tags/v') != true
+      uses: einaregilsson/build-number@v3
+      with:
+        token: ${{secrets.github_token}}
+
     - name: Set VERSION variable
       id: versionNumber
       uses: ./.github/workflows/BuildVersion
       with:
         branchReference: ${{ github.ref }}
+        buildNumber: ${{ steps.versionNumber.outputs.build_number }}
 
     - uses: rishabhgupta/split-by@v1
       id: split

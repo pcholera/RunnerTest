@@ -8,6 +8,11 @@ inputs:
     default: ''
     required: true
     type: string
+  buildNumber:
+    description: 'Build Number'
+    default: ''
+    required: false
+    type: string
 
 outputs:
   buildVersion:
@@ -17,25 +22,22 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Set VERSION variable
-      id: versionNumber
-      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v') != true
-      uses: einaregilsson/build-number@v3
-      with:
-        token: ${{secrets.github_token}}
-
     - name : Get Version Number
       if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v') != true
-      run: echo "package_version=0.0.${{ steps.versionNumber.outputs.build_number }}" >> $GITHUB_ENV;
+      run: echo "package_version=0.0.${{ inputs.buildNumber }}" >> $GITHUB_ENV;
+      shell: bash
 
     - name : Get Release Version Number
       if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
       run: echo "package_version=${inputs.branchReference:11}" >> $GITHUB_ENV;
+      shell: bash
 
     - name: "Print Version Number"
       run: echo "Version = $package_version"
+      shell: bash
 
     - name: Version Number
       id: buildVersion
       if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
       run: echo "::set-output name=number::$package_version";
+      shell: bash
