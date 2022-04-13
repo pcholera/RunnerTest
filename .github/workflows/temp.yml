@@ -26,7 +26,7 @@ jobs:
 
     - name: Set VERSION variable
       id: versionNumber
-      uses: ./.github/workflows/Allegro_Proxy_Build_Version.yml
+      uses: ./.github/workflows/BuildVersion
       with:
         branchReference: ${{ github.ref }}
 
