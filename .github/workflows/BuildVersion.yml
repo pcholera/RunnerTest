@@ -25,7 +25,7 @@ jobs:
 
       - name : Get Version Number
         if: startsWith(github.ref, 'refs/tags/v') != true
-        run: echo "package_version=0.0.${{ inputs.buildNumber }}" >> $GITHUB_ENV;
+        run: echo "package_version=0.0.${{ steps.buildNumber.outputs.build_number }}" >> $GITHUB_ENV;
         shell: bash
 
       - name : Get Release Version Number
