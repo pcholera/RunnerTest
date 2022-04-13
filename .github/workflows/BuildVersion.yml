@@ -4,7 +4,7 @@ on:
     outputs:
       buildVersion:
         description: "Output Version Number"
-        value: ${{ steps.buildVersion.outputs.number }}
+        value: ${{ jobs.buildVersion.outputs.version }}
 
 env:
   GITHUB_REF: github.ref
@@ -12,6 +12,8 @@ env:
 jobs:
   buildVersion:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.buildVersion.outputs.number }}
 
     steps:
       - name: Generate Build Number
@@ -24,10 +26,6 @@ jobs:
       - name : Get Version Number
         if: startsWith(github.ref, 'refs/tags/v') != true
         run: echo "package_version=0.0.${{ inputs.buildNumber }}" >> $GITHUB_ENV;
-        shell: bash
-
-      - name: "Print Version Number"
-        run: echo "github ref = ${GITHUB_REF:11}"
         shell: bash
 
       - name : Get Release Version Number
