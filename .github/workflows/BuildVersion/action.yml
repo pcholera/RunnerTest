@@ -3,11 +3,6 @@ author: Parshad Cholera
 description: Generate Version Number For Regular Build And Get Release Version Number For Release Tag
 
 inputs:
-  branchReference:
-    description: 'Relase Tag Referene'
-    default: ''
-    required: true
-    type: string
   buildNumber:
     description: 'Build Number'
     default: ''
@@ -23,17 +18,13 @@ runs:
   using: "composite"
   steps:
     - name : Get Version Number
-      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v') != true
+      pre-if: startsWith(github.ref, 'refs/tags/v') != true
       run: echo "package_version=0.0.${{ inputs.buildNumber }}" >> $GITHUB_ENV;
       shell: bash
 
-    - name: "Print Branch Name"
-      run: echo "Version = ${{ github.ref }}"
-      shell: bash
-
     - name : Get Release Version Number
-      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
-      run: echo "package_version=${{ inputs.branchReference }}" >> $GITHUB_ENV;
+      pre-if: startsWith(github.ref, 'refs/tags/v')
+      run: echo "package_version=${github.ref:11}" >> $GITHUB_ENV;
       shell: bash
 
     - name: "Print Version Number"
@@ -42,6 +33,5 @@ runs:
 
     - name: Version Number
       id: buildVersion
-      if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
       run: echo "::set-output name=number::$package_version";
       shell: bash
