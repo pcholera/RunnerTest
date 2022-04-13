@@ -8,7 +8,19 @@ on:
       - 'v*.*.*'
 
 jobs:
+  versionNumber:
+    name: Set VERSION variable
+
+    outputs:
+      buildVersion: ${{ steps.versionNumber.outputs.buildVersion }}
+
+    id: versionNumber
+    uses: ./.github/workflows/Allegro_Proxy_Build_Version.yml
+    with:
+      branchReference: ${{ github.ref }}
+
   build:
+    needs: versionNumber
 
     # runs-on: self-hosted
     runs-on: ubuntu-latest
@@ -19,25 +31,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: "Print Version Number"
+      run: echo "Version = ${{ needs.versionNumber.outputs.buildVersion }}"
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1
-
-    - name: Set VERSION variable
-      id: versionNumber
-      uses: ./.github/workflows/Allegro_Proxy_Build_Version.yml
-      with:
-        branchReference: ${{ github.ref }}
 
     - uses: rishabhgupta/split-by@v1
       id: split
       with:
           string: ${{ github.ref_name }}
           split-by: '/'
-
-    - name: "Print Version Number"
-      run: echo "Version = ${{ steps.versionNumber.outputs.buildVersion }}"
 
     - name: Ensure GitHub NuGet Source
       if: steps.split.outputs._0 == 'main' || startsWith(github.ref, 'refs/tags/v')
@@ -51,7 +57,7 @@ jobs:
 
     - name: Pack
       if: steps.split.outputs._0 == 'main' || startsWith(github.ref, 'refs/tags/v')
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ steps.versionNumber.outputs.buildVersion }} --no-build --output .
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ needs.versionNumber.outputs.buildVersion }} --no-build --output .
 
     - name: Push
       if: steps.split.outputs._0 == 'main' || startsWith(github.ref, 'refs/tags/v')
