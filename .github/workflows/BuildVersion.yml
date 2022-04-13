@@ -1,11 +1,6 @@
 name: Get Build Version
 on:
   workflow_call:
-    secrets:
-      github_token:
-        description: 'A token passed from the caller workflow'
-        required: false
-
     outputs:
       buildVersion:
         description: "Output Version Number"

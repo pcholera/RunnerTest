@@ -11,8 +11,6 @@ jobs:
   versionNumber:
     name: Get Version Number
     uses: ./.github/workflows/BuildVersion.yml
-    secrets:
-      github_token: ${{secrets.github_token}}
 
   build:
 
