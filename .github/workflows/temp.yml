@@ -36,7 +36,7 @@ jobs:
       uses: ./.github/workflows/BuildVersion
       with:
         branchReference: ${{ github.ref }}
-        buildNumber: ${{ steps.versionNumber.outputs.build_number }}
+        buildNumber: ${{ steps.buildNumber.outputs.build_number }}
 
     - uses: rishabhgupta/split-by@v1
       id: split

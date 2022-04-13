@@ -29,7 +29,7 @@ runs:
 
     - name : Get Release Version Number
       if: startsWith(${{ inputs.branchReference }}, 'refs/tags/v')
-      run: echo "package_version=${inputs.branchReference:11}" >> $GITHUB_ENV;
+      run: echo "package_version=${{inputs.branchReference:11}}" >> $GITHUB_ENV;
       shell: bash
 
     - name: "Print Version Number"
