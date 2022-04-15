@@ -4,11 +4,11 @@ on:
     outputs:
       repositoryName:
         description: "Repository Name"
-        value: ${{ jobs.buildVersion.repositoryName.repositoryName }}
+        value: ${{ jobs.buildVersion.outputs.repositoryName }}
 
       branchType:
         description: "Branch Type"
-        value: ${{ jobs.buildVersion.branchName.branchName }}
+        value: ${{ jobs.buildVersion.outputs.branchName }}
 
       buildVersion:
         description: "Output Version Number"
@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.buildVersion.outputs.number }}
+      branchType: ${{ steps.branchName.outputs.name }}
+      repositoryName: ${{ steps.repositoryName.outputs.name }}
 
     steps:
       - uses: rishabhgupta/split-by@v1
@@ -53,22 +55,14 @@ jobs:
         run: echo "package_version=${GITHUB_REF:11}" >> $GITHUB_ENV;
         shell: bash
 
-      - name: Print Repository Name
-        run: echo "${{ steps.repositoryNameSplit.outputs._1 }}";
-        shell: bash
-
-      - name: Print Branch Type
-        run: echo "${{ steps.branchNameSplit.outputs._0 }}";
-        shell: bash
-
       - name: Repository Name
         id: repositoryName
-        run: echo "::set-output name=repositoryName::${{ steps.repositoryNameSplit.outputs._1 }}";
+        run: echo "::set-output name=name::${{ steps.repositoryNameSplit.outputs._1 }}";
         shell: bash
 
       - name: Branch Type
         id: branchName
-        run: echo "::set-output name=branchName::${{ steps.branchNameSplit.outputs._0 }}";
+        run: echo "::set-output name=name::${{ steps.branchNameSplit.outputs._0 }}";
         shell: bash
 
       - name: Version Number
