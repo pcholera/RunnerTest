@@ -23,8 +23,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: "Print Version Number"
-      run: echo "Repo Name = ${{ github.repository }}"
+    - name: "Print Repo Name"
+      #run: echo "Repo Name = ${{ github.repository }}"
+      run: echo "${{ toJson(github) }}"
 
     - name: "Print Version Number"
       run: echo "Version = ${{ needs.versionNumber.outputs.buildVersion }}"
