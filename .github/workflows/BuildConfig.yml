@@ -4,11 +4,11 @@ on:
     outputs:
       repositoryName:
         description: "Repository Name"
-        value: ${{ jobs.buildVersion.repositoryNameSplit._1 }}
+        value: ${{ jobs.buildVersion.repositoryName.name }}
 
       branchType:
         description: "Branch Type"
-        value: ${{ jobs.buildVersion.branchNameSplit._0 }}
+        value: ${{ jobs.buildVersion.branchName.name }}
 
       buildVersion:
         description: "Output Version Number"
@@ -29,7 +29,7 @@ jobs:
         with:
           string: ${{ github.repository }}
           split-by: '/'
-          
+
       - uses: rishabhgupta/split-by@v1
         id: branchNameSplit
         with:
@@ -53,8 +53,14 @@ jobs:
         run: echo "package_version=${GITHUB_REF:11}" >> $GITHUB_ENV;
         shell: bash
 
-      - name: "Print Version Number"
-        run: echo "Version = $package_version"
+      - name: Repository Name
+        id: repositoryName
+        run: echo "::set-output name=name::steps.repositoryNameSplit.outputs._0";
+        shell: bash
+
+      - name: Branch Type
+        id: branchName
+        run: echo "::set-output name=name::steps.branchNameSplit.outputs._0";
         shell: bash
 
       - name: Version Number
