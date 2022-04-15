@@ -54,21 +54,21 @@ jobs:
         shell: bash
 
       - name: Print Repository Name
-        run: echo "steps.repositoryNameSplit.outputs._1";
+        run: echo "${{ steps.repositoryNameSplit.outputs._1 }}";
         shell: bash
 
       - name: Print Branch Type
-        run: echo "steps.branchNameSplit.outputs._0";
+        run: echo "${{ steps.branchNameSplit.outputs._0 }}";
         shell: bash
 
       - name: Repository Name
         id: repositoryName
-        run: echo "::set-output name=repositoryName::steps.repositoryNameSplit.outputs._1";
+        run: echo "::set-output name=repositoryName::${{ steps.repositoryNameSplit.outputs._1 }}";
         shell: bash
 
       - name: Branch Type
         id: branchName
-        run: echo "::set-output name=branchName::steps.branchNameSplit.outputs._0";
+        run: echo "::set-output name=branchName::${{ steps.branchNameSplit.outputs._0 }}";
         shell: bash
 
       - name: Version Number
