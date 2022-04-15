@@ -8,41 +8,34 @@ on:
       - 'v*.*.*'
 
 jobs:
-  versionNumber:
-    name: Get Version Number
-    uses: ./.github/workflows/BuildVersion.yml
+  buildConfig:
+    name: Get Build Config
+    uses: ./.github/workflows/BuildConfig.yml
 
   build:
-    needs: versionNumber
+    needs: buildConfig
 
     runs-on: self-hosted
-
-    outputs:
-      branchName: ${{ steps.split.outputs._0 }}
 
     steps:
     - uses: actions/checkout@v2
 
     - name: "Print Repo Name"
-      #run: echo "Repo Name = ${{ github.repository }}"
-      run: echo "${{ toJson(github) }}"
+      run: echo "Repo Name = ${{ needs.buildConfig.outputs.repositoryName }}"
+
+    - name: "Print Branch Type"
+      run: echo "Repo Name = ${{ needs.buildConfig.outputs.branchType }}"
 
     - name: "Print Version Number"
-      run: echo "Version = ${{ needs.versionNumber.outputs.buildVersion }}"
+      run: echo "Version = ${{ needs.buildConfig.outputs.buildVersion }}"
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1
 
-    - uses: rishabhgupta/split-by@v1
-      id: split
-      with:
-          string: ${{ github.ref_name }}
-          split-by: '/'
-
     - name: Ensure GitHub NuGet Source
-      if: steps.split.outputs._0 == 'main' || startsWith(github.ref, 'refs/tags/v')
+      if: ${{ needs.buildConfig.outputs.branchType }} == 'main' || startsWith(github.ref, 'refs/tags/v')
       run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n github -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
     - name: Build
@@ -52,23 +45,23 @@ jobs:
       run: dotnet test RunnerTestProject/RunnerTestProject.csproj --configuration Release --no-build --verbosity normal
 
     - name: Pack
-      if: steps.split.outputs._0 == 'main' || startsWith(github.ref, 'refs/tags/v')
-      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ needs.versionNumber.outputs.buildVersion }} --no-build --output .
+      if: ${{ needs.buildConfig.outputs.branchType }} == 'main' || startsWith(github.ref, 'refs/tags/v')
+      run: dotnet pack RunnerTest/RunnerTest.csproj --configuration Release /p:Version=${{ needs.buildConfig.outputs.buildVersion }} --no-build --output .
 
     - name: Push
-      if: steps.split.outputs._0 == 'main' || startsWith(github.ref, 'refs/tags/v')
+      if: ${{ needs.buildConfig.outputs.branchType }} == 'main' || startsWith(github.ref, 'refs/tags/v')
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate --source github
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
 
     - name: Cleanup Github Nuget Source
-      if: always() && (steps.split.outputs._0 == 'main' || startsWith(github.ref, 'refs/tags/v'))
+      if: always() && (${{ needs.buildConfig.outputs.branchType }} == 'main' || startsWith(github.ref, 'refs/tags/v'))
       continue-on-error: true
       run: dotnet nuget remove source github
 
   auto_merge_release_to_main:
-    needs: build
-    if: needs.build.outputs.branchName == 'release'
+    needs: [build, buildConfig]
+    if: ${{ needs.buildConfig.outputs.branchType }} == 'release'
     runs-on: ubuntu-latest
 
     steps:
