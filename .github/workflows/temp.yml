@@ -24,7 +24,7 @@ jobs:
       run: echo "Repo Name = ${{ needs.buildConfig.outputs.repositoryName }}"
 
     - name: "Print Branch Type"
-      run: echo "Repo Name = ${{ needs.buildConfig.outputs.branchType }}"
+      run: echo "Branch Type = ${{ needs.buildConfig.outputs.branchType }}"
 
     - name: "Print Version Number"
       run: echo "Version = ${{ needs.buildConfig.outputs.buildVersion }}"

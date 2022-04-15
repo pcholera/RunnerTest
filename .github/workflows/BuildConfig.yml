@@ -8,7 +8,7 @@ on:
 
       branchType:
         description: "Branch Type"
-        value: ${{ jobs.buildVersion.outputs.branchName }}
+        value: ${{ jobs.buildVersion.outputs.branchType }}
 
       buildVersion:
         description: "Output Version Number"
