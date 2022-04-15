@@ -16,13 +16,15 @@ jobs:
     needs: versionNumber
 
     runs-on: self-hosted
-    # runs-on: ubuntu-latest
 
     outputs:
       branchName: ${{ steps.split.outputs._0 }}
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: "Print Version Number"
+      run: echo "Repo Name = ${{ github.repository }}"
 
     - name: "Print Version Number"
       run: echo "Version = ${{ needs.versionNumber.outputs.buildVersion }}"
