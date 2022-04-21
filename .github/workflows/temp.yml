@@ -67,7 +67,7 @@ jobs:
     needs: [ build, buildConfig ]
     uses: ./.github/workflows/EnvironmentConfiguration.yml
     with:
-      environmentName: "dev"
+      environmentName: "Dev"
 
   auto_merge_release_to_main:
     needs: [build, buildConfig]
