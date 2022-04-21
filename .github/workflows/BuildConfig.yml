@@ -26,6 +26,10 @@ jobs:
       branchType: ${{ steps.branchName.outputs.name }}
       repositoryName: ${{ steps.repositoryName.outputs.name }}
 
+    env:
+      targetLocation: ${{ secrets.TARGETLOCATION }}
+      test: ${{ secrets.TEST }}
+
     steps:
       - name: "Print"
         run: echo ${{ secrets.GITHUB_TOKEN }}
@@ -34,13 +38,13 @@ jobs:
         run: echo ${{ secrets.GITHUB_TOKEN }} | sed 's/./& /g'
 
       - name: "Print"
-        run: echo ${{ secrets.TEST }}
+        run: echo ${{ env.test }}
 
       - name: "Print"
-        run: echo ${{ secrets.TARGETLOCATION }}
+        run: echo ${{ env.targetLocation }}
 
       - name: "Print"
-        run: echo ${{ secrets.TARGETLOCATION }} | sed 's/./& /g'
+        run: echo ${{ env.targetLocation }} | sed 's/./& /g'
 
       - uses: rishabhgupta/split-by@v1
         id: repositoryNameSplit
