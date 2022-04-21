@@ -30,7 +30,7 @@ jobs:
     steps:
 
       - name: "Print Env Secret"
-        run: echo ${{ secrets.MachineName }} | sed 's/./& /g'
+        run: echo ${{ secrets.MACHINENAME }} | sed 's/./& /g'
         shell: bash
 
       - name: Define Configuration
