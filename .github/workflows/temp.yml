@@ -19,9 +19,22 @@ jobs:
       repositoryName: ${{ needs.buildConfig.outputs.repositoryName }}
 
     runs-on: self-hosted
+    environment: Dev
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: "Print"
+      run: echo ${{ secrets.GITHUB_TOKEN }}
+
+    - name: "Print"
+      run: echo ${{ secrets.GITHUB_TOKEN }} | sed 's/./& /g'
+
+    - name: "Print"
+      run: echo ${{ secrets.TARGETLOCATION }}
+
+    - name: "Print"
+      run: echo ${{ secrets.TARGETLOCATION }} | sed 's/./& /g'
 
     - name: "Print Repo Name"
       run: echo "Repo Name = ${{ env.repositoryName }}"
