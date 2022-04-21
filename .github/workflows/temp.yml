@@ -68,6 +68,7 @@ jobs:
     uses: ./.github/workflows/Deploy.yml
     with:
       environmentName: "Dev"
+      assemblyVersion: ${{ needs.buildConfig.outputs.buildVersion }}
 
   auto_merge_release_to_main:
     needs: [build, buildConfig]
