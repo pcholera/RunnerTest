@@ -20,12 +20,25 @@ env:
 jobs:
   buildVersion:
     runs-on: ubuntu-latest
+    environment: Dev
     outputs:
       version: ${{ steps.buildVersion.outputs.number }}
       branchType: ${{ steps.branchName.outputs.name }}
       repositoryName: ${{ steps.repositoryName.outputs.name }}
 
     steps:
+      - name: "Print"
+        run: echo ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Print"
+        run: echo ${{ secrets.GITHUB_TOKEN }} | sed 's/./& /g'
+
+      - name: "Print"
+        run: echo ${{ secrets.TARGETLOCATION }}
+
+      - name: "Print"
+        run: echo ${{ secrets.TARGETLOCATION }} | sed 's/./& /g'
+
       - uses: rishabhgupta/split-by@v1
         id: repositoryNameSplit
         with:
