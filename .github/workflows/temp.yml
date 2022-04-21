@@ -62,6 +62,13 @@ jobs:
       continue-on-error: true
       run: dotnet nuget remove source github
 
+  deploy_to_dev:
+    name: Deploy To Dev
+    needs: [ build, buildConfig ]
+    uses: ./.github/workflows/EnvironmentConfiguration.yml
+    with:
+      environmentName: "Dev"
+
   auto_merge_release_to_main:
     needs: [build, buildConfig]
     if: ${{ needs.buildConfig.outputs.branchType }} == 'release'
