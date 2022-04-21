@@ -8,17 +8,23 @@ on:
         required: true
         type: string
     outputs:
-      environmentName:
-        description: "Name Of Environment"
-        value: ${{ jobs.buildConfig.outputs.repositoryName }}
+      appPoolName:
+        description: "Application Pool Name"
+        value: ${{ jobs.serverConfig.outputs.repositoryName }}
+      machineName:
+        description: "Machine Name"
+        value: ${{ jobs.serverConfig.outputs.machineName }}
+      targetLocation:
+        description: "Deploy Target Location"
+        value: ${{ jobs.serverConfig.outputs.targetLocation }}
 
 jobs:
-  buildConfig:
+  serverConfig:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.buildVersion.outputs.number }}
-      branchType: ${{ steps.branchName.outputs.name }}
-      repositoryName: ${{ steps.repositoryName.outputs.name }}
+      appPoolName: ${{ steps.configuration.outputs.appPoolName }}
+      machineName: ${{ steps.configuration.outputs.machineName }}
+      targetLocation: ${{ steps.configuration.outputs.targetLocation }}
 
     steps:
       - name: Define Configuration
@@ -26,6 +32,17 @@ jobs:
           if [[ "${{ inputs.environmentName }}" == "Dev" ]]; then
             echo "appPoolName=Espresso" >> $GITHUB_ENV;
             echo "machineName=NYALLEGROWEBD01" >> $GITHUB_ENV;
+            echo "targetLocation=\\NYALLEGROWEBD01\wwwroot\Espresso" >> $GITHUB_ENV;
+          fi
+          if [[ "${{ inputs.environmentName }}" == "Dev-Control" ]]; then
+            echo "appPoolName=Espresso-Control" >> $GITHUB_ENV;
+            echo "machineName=NYALLEGROWEBD01" >> $GITHUB_ENV;
+            echo "targetLocation=\\nyallegrowebd01\wwwroot\Espresso-Control" >> $GITHUB_ENV;
+          fi
+          if [[ "${{ inputs.environmentName }}" == "Production" ]]; then
+            echo "appPoolName=Espresso" >> $GITHUB_ENV;
+            echo "machineName=NYALLEGROWED01" >> $GITHUB_ENV;
+            echo "targetLocation=\\NYALLEGROWEB01\wwwroot\Espresso" >> $GITHUB_ENV;
           fi
         shell: bash
 
@@ -33,9 +50,18 @@ jobs:
         run: echo "App Pool Name = $appPoolName"
         shell: bash
 
+      - name: "Print Machine Name"
+        run: echo "Machine Name = $machineName"
+        shell: bash
+
+      - name: "Print Target Location"
+        run: echo "Target Location = $targetLocation"
+        shell: bash
+
       - name: Set Output Configuration
         id: configuration
         run: |
           echo "::set-output name=appPoolName::$appPoolName";
           echo "::set-output name=machineName::$machineName";
+          echo "::set-output name=targetLocation::$targetLocation";
         shell: bash
