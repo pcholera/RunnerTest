@@ -64,10 +64,14 @@ jobs:
 
   deploy_to_dev:
     name: Deploy To Dev
-    # needs: [ build, buildConfig ]
-    uses: ./.github/workflows/EnvironmentConfiguration.yml
+    needs: [ build, buildConfig ]
+    uses: ./.github/workflows/Deploy.yml
+    environment: Dev
     with:
-      environmentName: "Production"
+      appPoolName: ${{ secrets.APPPOOLNAME }}
+      machineName: ${{ secrets.MACHINENAME }}
+      targetLocation: ${{ secrets.TARGETLOCATION }}
+      assemblyVersion: ${{ needs.buildConfig.outputs.buildVersion }}
 
   auto_merge_release_to_main:
     needs: [build, buildConfig]

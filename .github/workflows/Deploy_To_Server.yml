@@ -1,0 +1,30 @@
+name: Deploy Build To Server
+
+on:
+  workflow_dispatch:
+    inputs:
+      environmentName:
+        description: "Name Of Environment"
+        default: 'Dev'
+        required: true
+        type: choice
+        options:
+        - Dev
+        - Dev-Control
+        - Production
+      assemblyVersion:
+        description: 'Assembly Version'
+        default: ''
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: ./.github/workflows/Deploy.yml
+    environment: ${{ github.event.inputs.environmentName }}
+    with:
+      appPoolName: ${{ secrets.APPPOOLNAME }}
+      machineName: ${{ secrets.MACHINENAME }}
+      targetLocation: ${{ secrets.TARGETLOCATION }}
+      assemblyVersion: ${{ github.event.inputs.assemblyVersion }}
