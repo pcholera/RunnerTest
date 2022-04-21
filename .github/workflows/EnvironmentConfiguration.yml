@@ -6,6 +6,7 @@ on:
         description: "Name Of Environment"
         default: ''
         required: true
+        type: string
     outputs:
       environmentName:
         description: "Name Of Environment"
