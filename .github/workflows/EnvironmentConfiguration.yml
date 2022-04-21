@@ -1,0 +1,40 @@
+name: Get Environment Config
+on:
+  workflow_call:
+    inputs:
+      environmentName:
+        description: "Name Of Environment"
+        default: ''
+        required: true
+    outputs:
+      environmentName:
+        description: "Name Of Environment"
+        value: ${{ jobs.buildConfig.outputs.repositoryName }}
+
+jobs:
+  buildConfig:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.buildVersion.outputs.number }}
+      branchType: ${{ steps.branchName.outputs.name }}
+      repositoryName: ${{ steps.repositoryName.outputs.name }}
+
+    steps:
+      - name: Define Configuration
+        run: |
+          if [[ "github.event.inputs.appPoolName" == "Dev" ]]; then
+            echo "appPoolName=Espresso" >> $GITHUB_ENV;
+            echo "machineName=NYALLEGROWEBD01" >> $GITHUB_ENV;
+          fi
+        shell: bash
+
+      - name: "Print App Pool Name"
+        run: echo "App Pool Name = $appPoolName"
+        shell: bash
+
+      - name: Set Output Configuration
+        id: configuration
+        run: |
+          echo "::set-output name=appPoolName::$appPoolName";
+          echo "::set-output name=machineName::$machineName";
+        shell: bash
