@@ -20,7 +20,7 @@ env:
 jobs:
   deploy:
     name: Deploy
-    runs-on: njrunner01
+    runs-on: self-hosted
     environment: ${{ inputs.environmentName }}
     steps:
       - name: "Artifacts Location"
