@@ -34,6 +34,9 @@ jobs:
         run: echo ${{ secrets.GITHUB_TOKEN }} | sed 's/./& /g'
 
       - name: "Print"
+        run: echo ${{ secrets.TEST }}
+
+      - name: "Print"
         run: echo ${{ secrets.TARGETLOCATION }}
 
       - name: "Print"
