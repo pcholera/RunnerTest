@@ -68,10 +68,7 @@ jobs:
     uses: ./.github/workflows/Deploy.yml
     environment: Dev
     with:
-      appPoolName: ${{ secrets.APPPOOLNAME }}
-      machineName: ${{ secrets.MACHINENAME }}
-      targetLocation: ${{ secrets.TARGETLOCATION }}
-      assemblyVersion: ${{ needs.buildConfig.outputs.buildVersion }}
+      environmentName: "Dev"
 
   auto_merge_release_to_main:
     needs: [build, buildConfig]

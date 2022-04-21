@@ -22,9 +22,5 @@ jobs:
   deploy:
     name: Deploy
     uses: ./.github/workflows/Deploy.yml
-    environment: ${{ github.event.inputs.environmentName }}
     with:
-      appPoolName: ${{ secrets.APPPOOLNAME }}
-      machineName: ${{ secrets.MACHINENAME }}
-      targetLocation: ${{ secrets.TARGETLOCATION }}
-      assemblyVersion: ${{ github.event.inputs.assemblyVersion }}
+      environmentName: ${{ github.event.inputs.environmentName }}
