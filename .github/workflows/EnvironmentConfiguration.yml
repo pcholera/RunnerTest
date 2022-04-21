@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Define Configuration
         run: |
-          if [[ "${{ inputs.appPoolName }}" == "Dev" ]]; then
+          if [[ "${{ inputs.environmentName }}" == "Dev" ]]; then
             echo "appPoolName=Espresso" >> $GITHUB_ENV;
             echo "machineName=NYALLEGROWEBD01" >> $GITHUB_ENV;
           fi
