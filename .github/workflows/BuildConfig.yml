@@ -20,7 +20,7 @@ env:
 jobs:
   buildVersion:
     runs-on: ubuntu-latest
-    environment: Dev
+    # environment: Dev
     outputs:
       version: ${{ steps.buildVersion.outputs.number }}
       branchType: ${{ steps.branchName.outputs.name }}
