@@ -64,7 +64,7 @@ jobs:
 
   deploy_to_dev:
     name: Deploy To Dev
-    needs: [ build, buildConfig ]
+    # needs: [ build, buildConfig ]
     uses: ./.github/workflows/EnvironmentConfiguration.yml
     with:
       environmentName: "Production"
