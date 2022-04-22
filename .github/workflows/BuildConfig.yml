@@ -5,6 +5,11 @@ on:
       environmentName:
         required: true
         type: string
+    secrets:
+      TARGETLOCATION:
+        required: true
+      TEST:
+        required: true
     outputs:
       repositoryName:
         description: "Repository Name"
