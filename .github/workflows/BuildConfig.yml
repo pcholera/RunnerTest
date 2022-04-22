@@ -1,6 +1,10 @@
 name: Get Build Config
 on:
   workflow_call:
+    inputs:
+      environmentName:
+        required: true
+        type: string
     outputs:
       repositoryName:
         description: "Repository Name"
@@ -20,7 +24,7 @@ env:
 jobs:
   buildVersion:
     runs-on: ubuntu-latest
-    # environment: Dev
+    environment: ${{ inputs.environmentName }}
     outputs:
       version: ${{ steps.buildVersion.outputs.number }}
       branchType: ${{ steps.branchName.outputs.name }}
@@ -33,9 +37,6 @@ jobs:
     steps:
       - name: "Print"
         run: echo ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "Print"
-        run: echo ${{ secrets.GITHUB_TOKEN }} | sed 's/./& /g'
 
       - name: "Print"
         run: echo ${{ env.test }}

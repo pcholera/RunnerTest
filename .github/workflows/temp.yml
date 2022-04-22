@@ -11,6 +11,11 @@ jobs:
   buildConfig:
     name: Get Build Config
     uses: ./.github/workflows/BuildConfig.yml
+    with:
+      environmentName: Dev
+    secrets:
+      TARGETLOCATION: ${{ secrets.TARGETLOCATION }}
+      TEST: ${{ secrets.TEST }}
 
   build:
     needs: buildConfig
