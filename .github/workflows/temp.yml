@@ -86,3 +86,4 @@ jobs:
           type: now
           target_branch: main
           github_token: ${{ github.token }}
+          label_name: 'automerge'
