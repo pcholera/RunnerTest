@@ -23,7 +23,7 @@ jobs:
     env:
       repositoryName: ${{ needs.buildConfig.outputs.repositoryName }}
 
-    runs-on: self-hosted
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
