@@ -63,9 +63,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: devmasx/merge-branch@v1.3.1
-        with:
-          type: now
-          target_branch: main
-          github_token: ${{ secrets.COMMIT_TOKEN }}
-          label_name: 'automerge'
+      # - uses: devmasx/merge-branch@v1.3.1
+      #   with:
+      #     type: now
+      #     target_branch: main
+      #     github_token: ${{ secrets.COMMIT_TOKEN }}
+      #     label_name: 'automerge'
+      uses: CasperWA/push-protected@v2
+      with:
+        token: ${{ secrets.COMMIT_TOKEN }}
+        branch: main
