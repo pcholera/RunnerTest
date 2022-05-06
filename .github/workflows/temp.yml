@@ -45,11 +45,11 @@ jobs:
       run: ForEach ($testProjectFile in (Get-ChildItem -Recurse |  Where-Object { $_.Name -like '*TestProject.csproj' })) { dotnet test $testProjectFile.FullName  --filter Category!=Integration --configuration Release }
 
     - name: Pack
-      if: needs.buildConfig.outputs.branchType == 'develop' || startsWith(github.ref, 'refs/tags/v')
+      if: needs.buildConfig.outputs.branchType == 'main' || startsWith(github.ref, 'refs/tags/v')
       run: dotnet pack ${{ env.projectPath }} --configuration Release /p:Version=${{ needs.buildConfig.outputs.buildVersion }} --no-build --output .
 
     - name: Push
-      if: needs.buildConfig.outputs.branchType == 'develop' || startsWith(github.ref, 'refs/tags/v')
+      if: needs.buildConfig.outputs.branchType == 'main' || startsWith(github.ref, 'refs/tags/v')
       run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate --source github
 
     - name: Cleanup Github Nuget Source
