@@ -67,5 +67,5 @@ jobs:
         with:
           type: now
           target_branch: main
-          github_token: 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
+          github_token: ${{ secrets.COMMIT_TOKEN }}
           label_name: 'automerge'
