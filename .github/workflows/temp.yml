@@ -59,7 +59,7 @@ jobs:
 
   auto_merge_release_to_main:
     needs: [build, buildConfig]
-    if: ${{ needs.buildConfig.outputs.branchType }} == 'release'
+    if: needs.buildConfig.outputs.branchType == 'release'
     runs-on: ubuntu-latest
 
     steps:
