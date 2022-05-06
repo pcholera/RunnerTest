@@ -59,7 +59,7 @@ jobs:
 
   auto_merge_release_to_main:
     needs: [build, buildConfig]
-    if: needs.buildConfig.outputs.branchType == 'release'
+    # if: needs.buildConfig.outputs.branchType == 'release'
     runs-on: ubuntu-latest
 
     steps:
@@ -67,5 +67,5 @@ jobs:
         with:
           type: now
           target_branch: main
-          github_token: ${{ github.token }}
+          github_token: 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
           label_name: 'automerge'
