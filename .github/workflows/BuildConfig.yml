@@ -1,15 +1,6 @@
 name: Get Build Config
 on:
   workflow_call:
-    inputs:
-      environmentName:
-        required: true
-        type: string
-    secrets:
-      TARGETLOCATION:
-        required: true
-      TEST:
-        required: true
     outputs:
       repositoryName:
         description: "Repository Name"
@@ -40,18 +31,6 @@ jobs:
       test: ${{ secrets.TEST }}
 
     steps:
-      - name: "Print"
-        run: echo ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "Print"
-        run: echo ${{ env.test }}
-
-      - name: "Print"
-        run: echo ${{ env.targetLocation }}
-
-      - name: "Print"
-        run: echo ${{ env.targetLocation }} | sed 's/./& /g'
-
       - uses: rishabhgupta/split-by@v1
         id: repositoryNameSplit
         with:
@@ -66,14 +45,14 @@ jobs:
 
       - name: Generate Build Number
         id: buildNumber
-        if: startsWith(github.ref, 'refs/tags/v') != true
+        if: startsWith(github.ref, 'refs/tags/v') != true && github.ref_name == 'develop'
         uses: einaregilsson/build-number@v3
         with:
           token: ${{secrets.github_token}}
 
       - name : Get Version Number
-        if: startsWith(github.ref, 'refs/tags/v') != true
-        run: echo "package_version=0.0.${{ steps.buildNumber.outputs.build_number }}" >> $GITHUB_ENV;
+        if: startsWith(github.ref, 'refs/tags/v') != true && github.ref_name == 'develop'
+        run: echo "package_version=0.1.${{ steps.buildNumber.outputs.build_number }}" >> $GITHUB_ENV;
         shell: bash
 
       - name : Get Release Version Number
