@@ -3,7 +3,7 @@ on:
   workflow_call:
     outputs:
       repositoryName:
-        description: "Repository Name"
+        description: "Repository Name "
         value: ${{ jobs.buildVersion.outputs.repositoryName }}
 
       branchType:
