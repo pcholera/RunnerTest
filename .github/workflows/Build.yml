@@ -78,3 +78,6 @@ jobs:
     steps:
     - name: "Deploy"
       run: echo "Deploy To Production Process"
+
+    - name: "Print Version Number"
+      run: echo "Version = ${{ needs.buildConfig.outputs.buildVersion }}"
