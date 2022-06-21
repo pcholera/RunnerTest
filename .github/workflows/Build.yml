@@ -7,9 +7,6 @@ on:
   release:
     types: [published, released]
 
-env:
-  pre_release: ${{ github.event.release.prerelease }}
-
 jobs:
   buildConfig:
     name: Get Build Config
@@ -68,7 +65,7 @@ jobs:
     name: Deploy To Dev
     needs: [ build, buildConfig ]
     runs-on: ubuntu-latest
-    if: needs.buildConfig.outputs.branchType == 'main' || (startsWith(github.ref, 'refs/tags/v') && ${{ env.pre_release }} == true)
+    if: needs.buildConfig.outputs.branchType == 'main' || (startsWith(github.ref, 'refs/tags/v') && ${{ github.event.release.prerelease }} == true)
     steps:
     - name: "Deploy"
       run: echo "Deploy To Dev Process"
@@ -77,7 +74,7 @@ jobs:
     name: Deploy To Production
     needs: [ buildConfig ]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v') && ${{ env.pre_release }} == false
+    if: startsWith(github.ref, 'refs/tags/v') && ${{ github.event.release.prerelease }} == false
     steps:
     - name: "Deploy"
       run: echo "Deploy To Production Process"
