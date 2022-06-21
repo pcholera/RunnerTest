@@ -74,4 +74,8 @@ jobs:
       - name: Pre Release
         run: |
               echo $pre_release
+              echo "test................."
+              echo $GIT_CONTEXT
         shell: bash
+        env:
+            GIT_CONTEXT: ${{ tojson(github) }}
