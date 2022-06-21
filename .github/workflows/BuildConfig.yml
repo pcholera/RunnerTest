@@ -69,3 +69,13 @@ jobs:
         id: buildVersion
         run: echo "::set-output name=number::$package_version";
         shell: bash
+
+      - name: Version Number
+        run: |
+              echo $pre_release
+              echo "test..................."
+              echo $GIT_CONTEXT
+        shell: bash
+        env: 
+          GIT_CONTEXT: ${{ tojson(github) }}
+          pre_release: ${{ github.event.release.prerelease }}
