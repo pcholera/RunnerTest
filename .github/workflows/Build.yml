@@ -23,7 +23,6 @@ jobs:
       projectPath: ${{ needs.buildConfig.outputs.repositoryName }}/${{ needs.buildConfig.outputs.repositoryName }}.csproj
 
     runs-on: windows-latest
-    if: $pre_release
 
     steps:
     - uses: actions/checkout@v2
