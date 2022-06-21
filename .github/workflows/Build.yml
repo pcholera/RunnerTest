@@ -23,6 +23,7 @@ jobs:
       projectPath: ${{ needs.buildConfig.outputs.repositoryName }}/${{ needs.buildConfig.outputs.repositoryName }}.csproj
 
     runs-on: windows-latest
+    if: $pre_release != true
 
     steps:
     - uses: actions/checkout@v2
@@ -67,7 +68,7 @@ jobs:
     name: Deploy To Dev
     needs: [ build, buildConfig ]
     runs-on: ubuntu-latest
-    if: needs.buildConfig.outputs.branchType == 'main' || (startsWith(github.ref, 'refs/tags/v') && github.event.release.prerelease)
+    if: needs.buildConfig.outputs.branchType == 'main' || (startsWith(github.ref, 'refs/tags/v') && $pre_release == true)
     steps:
     - name: "Deploy"
       run: echo "Deploy To Dev Process"
@@ -76,7 +77,7 @@ jobs:
     name: Deploy To Production
     needs: [ buildConfig ]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v') && !github.event.release.prerelease
+    if: startsWith(github.ref, 'refs/tags/v') && $pre_release == false
     steps:
     - name: "Deploy"
       run: echo "Deploy To Production Process"
