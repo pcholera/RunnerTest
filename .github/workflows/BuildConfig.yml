@@ -3,32 +3,27 @@ on:
   workflow_call:
     outputs:
       repositoryName:
-        description: "Repository Name "
-        value: ${{ jobs.buildVersion.outputs.repositoryName }}
+        description: "Repository Name"
+        value: ${{ jobs.buildConfig.outputs.repositoryName }}
 
       branchType:
         description: "Branch Type"
-        value: ${{ jobs.buildVersion.outputs.branchType }}
+        value: ${{ jobs.buildConfig.outputs.branchType }}
 
       buildVersion:
         description: "Output Version Number"
-        value: ${{ jobs.buildVersion.outputs.version }}
+        value: ${{ jobs.buildConfig.outputs.version }}
 
 env:
   GITHUB_REF: github.ref
 
 jobs:
-  buildVersion:
+  buildConfig:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environmentName }}
     outputs:
       version: ${{ steps.buildVersion.outputs.number }}
       branchType: ${{ steps.branchName.outputs.name }}
       repositoryName: ${{ steps.repositoryName.outputs.name }}
-
-    env:
-      targetLocation: ${{ secrets.TARGETLOCATION }}
-      test: ${{ secrets.TEST }}
 
     steps:
       - uses: rishabhgupta/split-by@v1
