@@ -78,17 +78,3 @@ jobs:
     steps:
     - name: "Deploy"
       run: echo "Deploy To Production Process"
-
-
-  auto_merge_release_to_main:
-    needs: [build, buildConfig]
-    if: needs.buildConfig.outputs.branchType == 'release'
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: devmasx/merge-branch@v1.3.1
-        with:
-          type: now
-          target_branch: main
-          github_token: ${{ secrets.COMMIT_TOKEN }}
-          label_name: 'automerge'
