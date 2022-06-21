@@ -7,6 +7,9 @@ on:
   release:
     types: [published, released]
 
+env:
+  pre_release: ${{ github.event.release.prerelease }}
+
 jobs:
   buildConfig:
     name: Get Build Config
@@ -20,7 +23,7 @@ jobs:
       projectPath: ${{ needs.buildConfig.outputs.repositoryName }}/${{ needs.buildConfig.outputs.repositoryName }}.csproj
 
     runs-on: windows-latest
-    if: "!github.event.release.prerelease"
+    if: $pre_release
 
     steps:
     - uses: actions/checkout@v2

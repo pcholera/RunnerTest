@@ -16,6 +16,7 @@ on:
 
 env:
   GITHUB_REF: github.ref
+  pre_release: ${{ github.event.release.prerelease }}
 
 jobs:
   buildConfig:
@@ -73,9 +74,4 @@ jobs:
       - name: Version Number
         run: |
               echo $pre_release
-              echo "test..................."
-              echo $GIT_CONTEXT
         shell: bash
-        env: 
-          GIT_CONTEXT: ${{ tojson(github) }}
-          pre_release: ${{ github.event.release.prerelease }}
