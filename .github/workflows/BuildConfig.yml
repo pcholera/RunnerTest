@@ -71,7 +71,7 @@ jobs:
         run: echo "::set-output name=number::$package_version";
         shell: bash
 
-      - name: Version Number
+      - name: Pre Release
         run: |
               echo $pre_release
         shell: bash
