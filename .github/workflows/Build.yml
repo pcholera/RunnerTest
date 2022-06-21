@@ -18,14 +18,13 @@ jobs:
     env:
       projectName: ${{ needs.buildConfig.outputs.repositoryName }}
       projectPath: ${{ needs.buildConfig.outputs.repositoryName }}/${{ needs.buildConfig.outputs.repositoryName }}.csproj
-    
-    #if: !github.event.release.prerelease
+
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
 
-     - name: "Print Repo Name"
+    - name: "Print Repo Name"
       run: echo "Repo Name = ${{ needs.buildConfig.outputs.repositoryName }}"
 
     - name: "Print Branch Type"
@@ -39,11 +38,11 @@ jobs:
       with:
         dotnet-version: 3.1
 
-    - name: Add Nuget Source
+    - name: Ensure GitHub NuGet Source
       run: dotnet nuget add source https://nuget.pkg.github.com/pcholera/index.json -n github -u ${{ github.actor }}  -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
 
-    - name: Build
-      run: dotnet build ${{ env.projectPath }} --configuration Release
+    - name: Test
+      run: ForEach ($testProjectFile in (Get-ChildItem -Recurse |  Where-Object { $_.Name -like '*TestProject.csproj' })) { dotnet test $testProjectFile.FullName  --filter Category!=Integration --configuration Release }
 
     - name: Cleanup Github Nuget Source
       if: always()
@@ -68,7 +67,7 @@ jobs:
 
 
   auto_merge_release_to_main:
-    needs: [build_job, buildConfig]
+    needs: [build, buildConfig]
     if: needs.buildConfig.outputs.branchType == 'release'
     runs-on: ubuntu-latest
 
