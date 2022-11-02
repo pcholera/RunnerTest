@@ -62,7 +62,7 @@ jobs:
 
       - name: Branch Type
         id: branchName
-        run: echo "name=${{ steps.branchNameSplit.outputs._0 }} >> $GITHUB_OUTPUT";
+        run: echo "name=${{ steps.branchNameSplit.outputs._0 }}" >> $GITHUB_OUTPUT;
         shell: bash
 
       - name: Version Number
