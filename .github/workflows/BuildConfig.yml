@@ -26,13 +26,13 @@ jobs:
       repositoryName: ${{ steps.repositoryName.outputs.name }}
 
     steps:
-      - uses: rishabhgupta/split-by@v1
+      - uses: rishabhgupta/split-by@v1.0.1
         id: repositoryNameSplit
         with:
           string: ${{ github.repository }}
           split-by: '/'
 
-      - uses: rishabhgupta/split-by@v1
+      - uses: rishabhgupta/split-by@v1.0.1
         id: branchNameSplit
         with:
           string: ${{ github.ref_name }}
@@ -57,15 +57,15 @@ jobs:
 
       - name: Repository Name
         id: repositoryName
-        run: echo "::set-output name=name::${{ steps.repositoryNameSplit.outputs._1 }}";
+        run: echo "name=${{ steps.repositoryNameSplit.outputs._1 }}" >> $GITHUB_OUTPUT;
         shell: bash
 
       - name: Branch Type
         id: branchName
-        run: echo "::set-output name=name::${{ steps.branchNameSplit.outputs._0 }}";
+        run: echo "name=${{ steps.branchNameSplit.outputs._0 }} >> $GITHUB_OUTPUT";
         shell: bash
 
       - name: Version Number
         id: buildVersion
-        run: echo "::set-output name=number::$package_version";
+        run: echo "number=$package_version" >> $GITHUB_OUTPUT;
         shell: bash
