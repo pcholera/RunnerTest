@@ -23,7 +23,7 @@ jobs:
     if: "!github.event.release.prerelease"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: "Print Repo Name"
       run: echo "Repo Name = ${{ needs.buildConfig.outputs.repositoryName }}"
@@ -35,7 +35,7 @@ jobs:
       run: echo "Version = ${{ needs.buildConfig.outputs.buildVersion }}"
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 3.1
 
