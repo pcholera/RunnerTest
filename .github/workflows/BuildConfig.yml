@@ -44,6 +44,9 @@ jobs:
         uses: einaregilsson/build-number@v3
         with:
           token: ${{secrets.github_token}}
+      
+      - name: Output Run ID
+        run: echo "Run ID = ${{ github.run_id }}"
 
       - name : Get Version Number
         if: startsWith(github.ref, 'refs/tags/v') != true && github.ref_name == 'main'
