@@ -38,24 +38,16 @@ jobs:
           msg: ${{ github.ref_name }}
           separator: '/'
 
-      # - name: Generate Build Number
-      #   id: buildNumber
-      #   if: startsWith(github.ref, 'refs/tags/v') != true && github.ref_name == 'main'
-      #   uses: einaregilsson/build-number@v3
-      #   with:
-      #     token: ${{secrets.github_token}}
-      
-      - name: Output Run ID
-        run: echo "Run ID = ${{ github.run_id }}"
-
-      # - name : Get Version Number
-      #   if: startsWith(github.ref, 'refs/tags/v') != true && github.ref_name == 'main'
-      #   run: echo "package_version=0.1.${{ steps.buildNumber.outputs.build_number }}" >> $GITHUB_ENV;
-      #   shell: bash
+      - name: Generate Build Number
+        id: buildNumber
+        if: startsWith(github.ref, 'refs/tags/v') != true && github.ref_name == 'main'
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{secrets.github_token}}
 
       - name : Get Version Number
         if: startsWith(github.ref, 'refs/tags/v') != true && github.ref_name == 'main'
-        run: echo "package_version=0.1.1" >> $GITHUB_ENV;
+        run: echo "package_version=0.1.${{ steps.buildNumber.outputs.build_number }}" >> $GITHUB_ENV;
         shell: bash
 
       - name : Get Release Version Number
