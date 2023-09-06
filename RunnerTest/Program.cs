@@ -6,7 +6,7 @@ namespace RunnerTest
     {
         static void Main(string[] args)
         {
-            BankAccount ba = new BankAccount("Parshad Cholera", 20);
+            BankAccount ba = new BankAccount("Parshad Cholera", 30);
 
             ba.Credit(50);
             ba.Debit(20);//test
